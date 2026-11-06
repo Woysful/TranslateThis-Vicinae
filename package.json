@@ -1,0 +1,3358 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
+  "name": "translate-this",
+  "title": "TranslateThis",
+  "description": "Translate text with Google Translate or DeepL: language sets, quick translation to many languages, instant translate and paste, text-to-speech",
+  "version": "1.0.0",
+  "categories": [
+    "Productivity"
+  ],
+  "license": "MIT",
+  "author": "woysful",
+  "contributors": [],
+  "pastContributors": [],
+  "icon": "icon.png",
+  "platforms": [
+    "Linux",
+    "macOS"
+  ],
+  "commands": [
+    {
+      "name": "translate",
+      "title": "Translate",
+      "subtitle": "TranslateThis",
+      "description": "Translate text with the selected language set. With one target language it also shows the opposite direction",
+      "mode": "view",
+      "keywords": [
+        "translate",
+        "google",
+        "deepl"
+      ]
+    },
+    {
+      "name": "quick-translate",
+      "title": "Quick Translate",
+      "subtitle": "TranslateThis",
+      "description": "Translate text to several languages at once",
+      "mode": "view",
+      "keywords": [
+        "translate",
+        "multiple languages"
+      ]
+    },
+    {
+      "name": "translate-form",
+      "title": "Translate Form",
+      "subtitle": "TranslateThis",
+      "description": "Translate longer text in a form, with provider, languages and DeepL formality",
+      "mode": "view",
+      "keywords": [
+        "translate",
+        "form",
+        "formality"
+      ]
+    },
+    {
+      "name": "instant-translate-copy",
+      "title": "Instant Translate Copy",
+      "subtitle": "TranslateThis",
+      "description": "Translate the selected text (or the argument) and copy the translation",
+      "mode": "no-view",
+      "keywords": [
+        "translate",
+        "copy",
+        "clipboard"
+      ],
+      "arguments": [
+        {
+          "name": "text",
+          "type": "text",
+          "placeholder": "Text (optional)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "instant-translate-paste",
+      "title": "Instant Translate Paste",
+      "subtitle": "TranslateThis",
+      "description": "Translate the selected text (or the argument) and paste the translation into the active window",
+      "mode": "no-view",
+      "keywords": [
+        "translate",
+        "paste",
+        "replace"
+      ],
+      "arguments": [
+        {
+          "name": "text",
+          "type": "text",
+          "placeholder": "Text (optional)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "instant-translate-view",
+      "title": "Instant Translate View",
+      "subtitle": "TranslateThis",
+      "description": "Translate the selected text (or the argument) and show the translation in a notification",
+      "mode": "no-view",
+      "keywords": [
+        "translate",
+        "notification",
+        "hud"
+      ],
+      "arguments": [
+        {
+          "name": "text",
+          "type": "text",
+          "placeholder": "Text (optional)",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "preferences": [
+    {
+      "name": "provider",
+      "title": "Provider",
+      "description": "Translation service used by default. Views can switch it with Ctrl+Shift+P; the switch lasts until this preference is changed",
+      "type": "dropdown",
+      "required": false,
+      "default": "google",
+      "data": [
+        {
+          "title": "Google Translate",
+          "value": "google"
+        },
+        {
+          "title": "DeepL",
+          "value": "deepl"
+        }
+      ]
+    },
+    {
+      "name": "deeplApiKey",
+      "title": "DeepL API Key",
+      "description": "Needed for DeepL. Free keys (ending in :fx) and Pro keys both work. Get one at deepl.com/pro-api",
+      "type": "password",
+      "required": false
+    },
+    {
+      "name": "formality",
+      "title": "DeepL Formality",
+      "description": "Default formality for DeepL translations. Languages without formality ignore it",
+      "type": "dropdown",
+      "required": false,
+      "default": "default",
+      "data": [
+        {
+          "title": "Default",
+          "value": "default"
+        },
+        {
+          "title": "More formal (polite)",
+          "value": "prefer_more"
+        },
+        {
+          "title": "Less formal (plain)",
+          "value": "prefer_less"
+        }
+      ]
+    },
+    {
+      "name": "langFrom",
+      "title": "Translate From",
+      "description": "Source language of the default language set",
+      "type": "dropdown",
+      "required": false,
+      "default": "auto",
+      "data": [
+        {
+          "title": "Auto-Detect",
+          "value": "auto"
+        },
+        {
+          "title": "Abkhaz (Google Translate only)",
+          "value": "ab"
+        },
+        {
+          "title": "Acehnese",
+          "value": "ace"
+        },
+        {
+          "title": "Acholi (Google Translate only)",
+          "value": "ach"
+        },
+        {
+          "title": "Afar (Google Translate only)",
+          "value": "aa"
+        },
+        {
+          "title": "Afrikaans",
+          "value": "af"
+        },
+        {
+          "title": "Albanian",
+          "value": "sq"
+        },
+        {
+          "title": "Alur (Google Translate only)",
+          "value": "alz"
+        },
+        {
+          "title": "Amharic (Google Translate only)",
+          "value": "am"
+        },
+        {
+          "title": "Arabic",
+          "value": "ar"
+        },
+        {
+          "title": "Aragonese (DeepL only)",
+          "value": "an"
+        },
+        {
+          "title": "Armenian",
+          "value": "hy"
+        },
+        {
+          "title": "Assamese",
+          "value": "as"
+        },
+        {
+          "title": "Avar (Google Translate only)",
+          "value": "av"
+        },
+        {
+          "title": "Awadhi (Google Translate only)",
+          "value": "awa"
+        },
+        {
+          "title": "Aymara",
+          "value": "ay"
+        },
+        {
+          "title": "Azerbaijani",
+          "value": "az"
+        },
+        {
+          "title": "Balinese (Google Translate only)",
+          "value": "ban"
+        },
+        {
+          "title": "Baluchi (Google Translate only)",
+          "value": "bal"
+        },
+        {
+          "title": "Bambara (Google Translate only)",
+          "value": "bm"
+        },
+        {
+          "title": "Baoulé (Google Translate only)",
+          "value": "bci"
+        },
+        {
+          "title": "Bashkir",
+          "value": "ba"
+        },
+        {
+          "title": "Basque",
+          "value": "eu"
+        },
+        {
+          "title": "Batak Karo (Google Translate only)",
+          "value": "btx"
+        },
+        {
+          "title": "Batak Simalungun (Google Translate only)",
+          "value": "bts"
+        },
+        {
+          "title": "Batak Toba (Google Translate only)",
+          "value": "bbc"
+        },
+        {
+          "title": "Belarusian",
+          "value": "be"
+        },
+        {
+          "title": "Bemba (Google Translate only)",
+          "value": "bem"
+        },
+        {
+          "title": "Bengali",
+          "value": "bn"
+        },
+        {
+          "title": "Betawi (Google Translate only)",
+          "value": "bew"
+        },
+        {
+          "title": "Bhojpuri",
+          "value": "bho"
+        },
+        {
+          "title": "Bikol (Google Translate only)",
+          "value": "bik"
+        },
+        {
+          "title": "Bosnian",
+          "value": "bs"
+        },
+        {
+          "title": "Breton",
+          "value": "br"
+        },
+        {
+          "title": "Bulgarian",
+          "value": "bg"
+        },
+        {
+          "title": "Buryat (Google Translate only)",
+          "value": "bua"
+        },
+        {
+          "title": "Cantonese",
+          "value": "yue"
+        },
+        {
+          "title": "Catalan",
+          "value": "ca"
+        },
+        {
+          "title": "Cebuano",
+          "value": "ceb"
+        },
+        {
+          "title": "Chamorro (Google Translate only)",
+          "value": "ch"
+        },
+        {
+          "title": "Chechen (Google Translate only)",
+          "value": "ce"
+        },
+        {
+          "title": "Chichewa (Google Translate only)",
+          "value": "ny"
+        },
+        {
+          "title": "Chinese (Simplified)",
+          "value": "zh-CN"
+        },
+        {
+          "title": "Chinese (Traditional)",
+          "value": "zh-TW"
+        },
+        {
+          "title": "Chuukese (Google Translate only)",
+          "value": "chk"
+        },
+        {
+          "title": "Chuvash (Google Translate only)",
+          "value": "cv"
+        },
+        {
+          "title": "Corsican (Google Translate only)",
+          "value": "co"
+        },
+        {
+          "title": "Crimean Tatar (Cyrillic) (Google Translate only)",
+          "value": "crh"
+        },
+        {
+          "title": "Crimean Tatar (Latin) (Google Translate only)",
+          "value": "crh-Latn"
+        },
+        {
+          "title": "Croatian",
+          "value": "hr"
+        },
+        {
+          "title": "Czech",
+          "value": "cs"
+        },
+        {
+          "title": "Danish",
+          "value": "da"
+        },
+        {
+          "title": "Dari",
+          "value": "fa-AF"
+        },
+        {
+          "title": "Dhivehi (Google Translate only)",
+          "value": "dv"
+        },
+        {
+          "title": "Dinka (Google Translate only)",
+          "value": "din"
+        },
+        {
+          "title": "Dogri (Google Translate only)",
+          "value": "doi"
+        },
+        {
+          "title": "Dombe (Google Translate only)",
+          "value": "dov"
+        },
+        {
+          "title": "Dutch",
+          "value": "nl"
+        },
+        {
+          "title": "Dyula (Google Translate only)",
+          "value": "dyu"
+        },
+        {
+          "title": "Dzongkha (Google Translate only)",
+          "value": "dz"
+        },
+        {
+          "title": "English",
+          "value": "en"
+        },
+        {
+          "title": "English (UK)",
+          "value": "en-GB"
+        },
+        {
+          "title": "English (US)",
+          "value": "en-US"
+        },
+        {
+          "title": "Esperanto",
+          "value": "eo"
+        },
+        {
+          "title": "Estonian",
+          "value": "et"
+        },
+        {
+          "title": "Ewe (Google Translate only)",
+          "value": "ee"
+        },
+        {
+          "title": "Faroese (Google Translate only)",
+          "value": "fo"
+        },
+        {
+          "title": "Fijian (Google Translate only)",
+          "value": "fj"
+        },
+        {
+          "title": "Filipino",
+          "value": "tl"
+        },
+        {
+          "title": "Finnish",
+          "value": "fi"
+        },
+        {
+          "title": "Fon (Google Translate only)",
+          "value": "fon"
+        },
+        {
+          "title": "French",
+          "value": "fr"
+        },
+        {
+          "title": "French (Canada)",
+          "value": "fr-CA"
+        },
+        {
+          "title": "Frisian (Google Translate only)",
+          "value": "fy"
+        },
+        {
+          "title": "Friulian (Google Translate only)",
+          "value": "fur"
+        },
+        {
+          "title": "Fulani (Google Translate only)",
+          "value": "ff"
+        },
+        {
+          "title": "Ga (Google Translate only)",
+          "value": "gaa"
+        },
+        {
+          "title": "Galician",
+          "value": "gl"
+        },
+        {
+          "title": "Georgian",
+          "value": "ka"
+        },
+        {
+          "title": "German",
+          "value": "de"
+        },
+        {
+          "title": "German (Switzerland)",
+          "value": "de-CH"
+        },
+        {
+          "title": "Greek",
+          "value": "el"
+        },
+        {
+          "title": "Guarani",
+          "value": "gn"
+        },
+        {
+          "title": "Gujarati",
+          "value": "gu"
+        },
+        {
+          "title": "Haitian Creole",
+          "value": "ht"
+        },
+        {
+          "title": "Hakha Chin (Google Translate only)",
+          "value": "cnh"
+        },
+        {
+          "title": "Hausa",
+          "value": "ha"
+        },
+        {
+          "title": "Hawaiian (Google Translate only)",
+          "value": "haw"
+        },
+        {
+          "title": "Hebrew",
+          "value": "iw"
+        },
+        {
+          "title": "Hiligaynon (Google Translate only)",
+          "value": "hil"
+        },
+        {
+          "title": "Hindi",
+          "value": "hi"
+        },
+        {
+          "title": "Hmong (Google Translate only)",
+          "value": "hmn"
+        },
+        {
+          "title": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "title": "Hunsrik (Google Translate only)",
+          "value": "hrx"
+        },
+        {
+          "title": "Iban (Google Translate only)",
+          "value": "iba"
+        },
+        {
+          "title": "Icelandic",
+          "value": "is"
+        },
+        {
+          "title": "Igbo",
+          "value": "ig"
+        },
+        {
+          "title": "Ilocano (Google Translate only)",
+          "value": "ilo"
+        },
+        {
+          "title": "Indonesian",
+          "value": "id"
+        },
+        {
+          "title": "Inuktut (Latin) (Google Translate only)",
+          "value": "iu-Latn"
+        },
+        {
+          "title": "Inuktut (Syllabics) (Google Translate only)",
+          "value": "iu"
+        },
+        {
+          "title": "Irish",
+          "value": "ga"
+        },
+        {
+          "title": "Italian",
+          "value": "it"
+        },
+        {
+          "title": "Jamaican Patois (Google Translate only)",
+          "value": "jam"
+        },
+        {
+          "title": "Japanese",
+          "value": "ja"
+        },
+        {
+          "title": "Javanese",
+          "value": "jv"
+        },
+        {
+          "title": "Jingpo (Google Translate only)",
+          "value": "kac"
+        },
+        {
+          "title": "Kalaallisut (Google Translate only)",
+          "value": "kl"
+        },
+        {
+          "title": "Kannada (Google Translate only)",
+          "value": "kn"
+        },
+        {
+          "title": "Kanuri (Google Translate only)",
+          "value": "kr"
+        },
+        {
+          "title": "Kapampangan",
+          "value": "pam"
+        },
+        {
+          "title": "Kazakh",
+          "value": "kk"
+        },
+        {
+          "title": "Khasi (Google Translate only)",
+          "value": "kha"
+        },
+        {
+          "title": "Khmer (Google Translate only)",
+          "value": "km"
+        },
+        {
+          "title": "Kiga (Google Translate only)",
+          "value": "cgg"
+        },
+        {
+          "title": "Kikongo (Google Translate only)",
+          "value": "kg"
+        },
+        {
+          "title": "Kinyarwanda (Google Translate only)",
+          "value": "rw"
+        },
+        {
+          "title": "Kituba (Google Translate only)",
+          "value": "ktu"
+        },
+        {
+          "title": "Kokborok (Google Translate only)",
+          "value": "trp"
+        },
+        {
+          "title": "Komi (Google Translate only)",
+          "value": "kv"
+        },
+        {
+          "title": "Konkani",
+          "value": "gom"
+        },
+        {
+          "title": "Korean",
+          "value": "ko"
+        },
+        {
+          "title": "Krio (Google Translate only)",
+          "value": "kri"
+        },
+        {
+          "title": "Kurdish (Kurmanji)",
+          "value": "ku"
+        },
+        {
+          "title": "Kurdish (Sorani)",
+          "value": "ckb"
+        },
+        {
+          "title": "Kyrgyz",
+          "value": "ky"
+        },
+        {
+          "title": "Lao (Google Translate only)",
+          "value": "lo"
+        },
+        {
+          "title": "Latgalian (Google Translate only)",
+          "value": "ltg"
+        },
+        {
+          "title": "Latin",
+          "value": "la"
+        },
+        {
+          "title": "Latvian",
+          "value": "lv"
+        },
+        {
+          "title": "Ligurian (Google Translate only)",
+          "value": "lij"
+        },
+        {
+          "title": "Limburgish (Google Translate only)",
+          "value": "li"
+        },
+        {
+          "title": "Lingala",
+          "value": "ln"
+        },
+        {
+          "title": "Lithuanian",
+          "value": "lt"
+        },
+        {
+          "title": "Lombard",
+          "value": "lmo"
+        },
+        {
+          "title": "Luganda (Google Translate only)",
+          "value": "lg"
+        },
+        {
+          "title": "Luo (Google Translate only)",
+          "value": "luo"
+        },
+        {
+          "title": "Luxembourgish",
+          "value": "lb"
+        },
+        {
+          "title": "Macedonian",
+          "value": "mk"
+        },
+        {
+          "title": "Madurese (Google Translate only)",
+          "value": "mad"
+        },
+        {
+          "title": "Maithili",
+          "value": "mai"
+        },
+        {
+          "title": "Makassar (Google Translate only)",
+          "value": "mak"
+        },
+        {
+          "title": "Malagasy",
+          "value": "mg"
+        },
+        {
+          "title": "Malay",
+          "value": "ms"
+        },
+        {
+          "title": "Malay (Jawi)",
+          "value": "ms-Arab"
+        },
+        {
+          "title": "Malayalam",
+          "value": "ml"
+        },
+        {
+          "title": "Maltese",
+          "value": "mt"
+        },
+        {
+          "title": "Mam (Google Translate only)",
+          "value": "mam"
+        },
+        {
+          "title": "Manx (Google Translate only)",
+          "value": "gv"
+        },
+        {
+          "title": "Maori",
+          "value": "mi"
+        },
+        {
+          "title": "Marathi",
+          "value": "mr"
+        },
+        {
+          "title": "Marshallese (Google Translate only)",
+          "value": "mh"
+        },
+        {
+          "title": "Marwadi (Google Translate only)",
+          "value": "mwr"
+        },
+        {
+          "title": "Mauritian Creole (Google Translate only)",
+          "value": "mfe"
+        },
+        {
+          "title": "Meadow Mari (Google Translate only)",
+          "value": "chm"
+        },
+        {
+          "title": "Meiteilon (Manipuri) (Google Translate only)",
+          "value": "mni-Mtei"
+        },
+        {
+          "title": "Minang (Google Translate only)",
+          "value": "min"
+        },
+        {
+          "title": "Mizo (Google Translate only)",
+          "value": "lus"
+        },
+        {
+          "title": "Mongolian",
+          "value": "mn"
+        },
+        {
+          "title": "Myanmar (Burmese)",
+          "value": "my"
+        },
+        {
+          "title": "Nahuatl (Eastern Huasteca) (Google Translate only)",
+          "value": "nhe"
+        },
+        {
+          "title": "Ndau (Google Translate only)",
+          "value": "ndc-ZW"
+        },
+        {
+          "title": "Ndebele (South) (Google Translate only)",
+          "value": "nr"
+        },
+        {
+          "title": "Nepalbhasa (Newari) (Google Translate only)",
+          "value": "new"
+        },
+        {
+          "title": "Nepali",
+          "value": "ne"
+        },
+        {
+          "title": "NKo (Google Translate only)",
+          "value": "bm-Nkoo"
+        },
+        {
+          "title": "Norwegian",
+          "value": "no"
+        },
+        {
+          "title": "Nuer (Google Translate only)",
+          "value": "nus"
+        },
+        {
+          "title": "Occitan",
+          "value": "oc"
+        },
+        {
+          "title": "Odia (Oriya) (Google Translate only)",
+          "value": "or"
+        },
+        {
+          "title": "Oromo",
+          "value": "om"
+        },
+        {
+          "title": "Ossetian (Google Translate only)",
+          "value": "os"
+        },
+        {
+          "title": "Pangasinan",
+          "value": "pag"
+        },
+        {
+          "title": "Papiamento (Google Translate only)",
+          "value": "pap"
+        },
+        {
+          "title": "Pashto",
+          "value": "ps"
+        },
+        {
+          "title": "Persian",
+          "value": "fa"
+        },
+        {
+          "title": "Polish",
+          "value": "pl"
+        },
+        {
+          "title": "Portuguese (Brazil)",
+          "value": "pt"
+        },
+        {
+          "title": "Portuguese (Portugal)",
+          "value": "pt-PT"
+        },
+        {
+          "title": "Punjabi (Gurmukhi)",
+          "value": "pa"
+        },
+        {
+          "title": "Punjabi (Shahmukhi)",
+          "value": "pa-Arab"
+        },
+        {
+          "title": "Quechua",
+          "value": "qu"
+        },
+        {
+          "title": "Qʼeqchiʼ (Google Translate only)",
+          "value": "kek"
+        },
+        {
+          "title": "Romani (Google Translate only)",
+          "value": "rom"
+        },
+        {
+          "title": "Romanian",
+          "value": "ro"
+        },
+        {
+          "title": "Rundi (Google Translate only)",
+          "value": "rn"
+        },
+        {
+          "title": "Russian",
+          "value": "ru"
+        },
+        {
+          "title": "Sami (North) (Google Translate only)",
+          "value": "se"
+        },
+        {
+          "title": "Samoan (Google Translate only)",
+          "value": "sm"
+        },
+        {
+          "title": "Sango (Google Translate only)",
+          "value": "sg"
+        },
+        {
+          "title": "Sanskrit",
+          "value": "sa"
+        },
+        {
+          "title": "Santali (Latin) (Google Translate only)",
+          "value": "sat-Latn"
+        },
+        {
+          "title": "Santali (Ol Chiki) (Google Translate only)",
+          "value": "sat"
+        },
+        {
+          "title": "Scots Gaelic (Google Translate only)",
+          "value": "gd"
+        },
+        {
+          "title": "Sepedi (Google Translate only)",
+          "value": "nso"
+        },
+        {
+          "title": "Serbian",
+          "value": "sr"
+        },
+        {
+          "title": "Sesotho",
+          "value": "st"
+        },
+        {
+          "title": "Seychellois Creole (Google Translate only)",
+          "value": "crs"
+        },
+        {
+          "title": "Shan (Google Translate only)",
+          "value": "shn"
+        },
+        {
+          "title": "Shona (Google Translate only)",
+          "value": "sn"
+        },
+        {
+          "title": "Sicilian",
+          "value": "scn"
+        },
+        {
+          "title": "Silesian (Google Translate only)",
+          "value": "szl"
+        },
+        {
+          "title": "Sindhi (Google Translate only)",
+          "value": "sd"
+        },
+        {
+          "title": "Sinhala (Google Translate only)",
+          "value": "si"
+        },
+        {
+          "title": "Slovak",
+          "value": "sk"
+        },
+        {
+          "title": "Slovenian",
+          "value": "sl"
+        },
+        {
+          "title": "Somali (Google Translate only)",
+          "value": "so"
+        },
+        {
+          "title": "Spanish",
+          "value": "es"
+        },
+        {
+          "title": "Spanish (Latin America)",
+          "value": "es-419"
+        },
+        {
+          "title": "Sundanese",
+          "value": "su"
+        },
+        {
+          "title": "Susu (Google Translate only)",
+          "value": "sus"
+        },
+        {
+          "title": "Swahili",
+          "value": "sw"
+        },
+        {
+          "title": "Swati (Google Translate only)",
+          "value": "ss"
+        },
+        {
+          "title": "Swedish",
+          "value": "sv"
+        },
+        {
+          "title": "Tahitian (Google Translate only)",
+          "value": "ty"
+        },
+        {
+          "title": "Tajik",
+          "value": "tg"
+        },
+        {
+          "title": "Tamazight (Google Translate only)",
+          "value": "ber-Latn"
+        },
+        {
+          "title": "Tamazight (Tifinagh) (Google Translate only)",
+          "value": "ber"
+        },
+        {
+          "title": "Tamil",
+          "value": "ta"
+        },
+        {
+          "title": "Tatar",
+          "value": "tt"
+        },
+        {
+          "title": "Telugu",
+          "value": "te"
+        },
+        {
+          "title": "Tetum (Google Translate only)",
+          "value": "tet"
+        },
+        {
+          "title": "Thai",
+          "value": "th"
+        },
+        {
+          "title": "Tibetan (Google Translate only)",
+          "value": "bo"
+        },
+        {
+          "title": "Tigrinya (Google Translate only)",
+          "value": "ti"
+        },
+        {
+          "title": "Tiv (Google Translate only)",
+          "value": "tiv"
+        },
+        {
+          "title": "Tok Pisin (Google Translate only)",
+          "value": "tpi"
+        },
+        {
+          "title": "Tongan (Google Translate only)",
+          "value": "to"
+        },
+        {
+          "title": "Tshiluba (Google Translate only)",
+          "value": "lua"
+        },
+        {
+          "title": "Tsonga",
+          "value": "ts"
+        },
+        {
+          "title": "Tswana",
+          "value": "tn"
+        },
+        {
+          "title": "Tulu (Google Translate only)",
+          "value": "tcy"
+        },
+        {
+          "title": "Tumbuka (Google Translate only)",
+          "value": "tum"
+        },
+        {
+          "title": "Turkish",
+          "value": "tr"
+        },
+        {
+          "title": "Turkmen",
+          "value": "tk"
+        },
+        {
+          "title": "Tuvan (Google Translate only)",
+          "value": "tyv"
+        },
+        {
+          "title": "Twi (Google Translate only)",
+          "value": "ak"
+        },
+        {
+          "title": "Udmurt (Google Translate only)",
+          "value": "udm"
+        },
+        {
+          "title": "Ukrainian",
+          "value": "uk"
+        },
+        {
+          "title": "Urdu",
+          "value": "ur"
+        },
+        {
+          "title": "Uyghur (Google Translate only)",
+          "value": "ug"
+        },
+        {
+          "title": "Uzbek",
+          "value": "uz"
+        },
+        {
+          "title": "Venda (Google Translate only)",
+          "value": "ve"
+        },
+        {
+          "title": "Venetian (Google Translate only)",
+          "value": "vec"
+        },
+        {
+          "title": "Vietnamese",
+          "value": "vi"
+        },
+        {
+          "title": "Waray (Google Translate only)",
+          "value": "war"
+        },
+        {
+          "title": "Welsh",
+          "value": "cy"
+        },
+        {
+          "title": "Wolof",
+          "value": "wo"
+        },
+        {
+          "title": "Xhosa",
+          "value": "xh"
+        },
+        {
+          "title": "Yakut (Google Translate only)",
+          "value": "sah"
+        },
+        {
+          "title": "Yiddish",
+          "value": "yi"
+        },
+        {
+          "title": "Yoruba (Google Translate only)",
+          "value": "yo"
+        },
+        {
+          "title": "Yucatec Maya (Google Translate only)",
+          "value": "yua"
+        },
+        {
+          "title": "Zapotec (Google Translate only)",
+          "value": "zap"
+        },
+        {
+          "title": "Zulu",
+          "value": "zu"
+        }
+      ]
+    },
+    {
+      "name": "lang1",
+      "title": "Primary Language",
+      "description": "Language to translate to",
+      "type": "dropdown",
+      "required": false,
+      "default": "en",
+      "data": [
+        {
+          "title": "Abkhaz (Google Translate only)",
+          "value": "ab"
+        },
+        {
+          "title": "Acehnese",
+          "value": "ace"
+        },
+        {
+          "title": "Acholi (Google Translate only)",
+          "value": "ach"
+        },
+        {
+          "title": "Afar (Google Translate only)",
+          "value": "aa"
+        },
+        {
+          "title": "Afrikaans",
+          "value": "af"
+        },
+        {
+          "title": "Albanian",
+          "value": "sq"
+        },
+        {
+          "title": "Alur (Google Translate only)",
+          "value": "alz"
+        },
+        {
+          "title": "Amharic (Google Translate only)",
+          "value": "am"
+        },
+        {
+          "title": "Arabic",
+          "value": "ar"
+        },
+        {
+          "title": "Aragonese (DeepL only)",
+          "value": "an"
+        },
+        {
+          "title": "Armenian",
+          "value": "hy"
+        },
+        {
+          "title": "Assamese",
+          "value": "as"
+        },
+        {
+          "title": "Avar (Google Translate only)",
+          "value": "av"
+        },
+        {
+          "title": "Awadhi (Google Translate only)",
+          "value": "awa"
+        },
+        {
+          "title": "Aymara",
+          "value": "ay"
+        },
+        {
+          "title": "Azerbaijani",
+          "value": "az"
+        },
+        {
+          "title": "Balinese (Google Translate only)",
+          "value": "ban"
+        },
+        {
+          "title": "Baluchi (Google Translate only)",
+          "value": "bal"
+        },
+        {
+          "title": "Bambara (Google Translate only)",
+          "value": "bm"
+        },
+        {
+          "title": "Baoulé (Google Translate only)",
+          "value": "bci"
+        },
+        {
+          "title": "Bashkir",
+          "value": "ba"
+        },
+        {
+          "title": "Basque",
+          "value": "eu"
+        },
+        {
+          "title": "Batak Karo (Google Translate only)",
+          "value": "btx"
+        },
+        {
+          "title": "Batak Simalungun (Google Translate only)",
+          "value": "bts"
+        },
+        {
+          "title": "Batak Toba (Google Translate only)",
+          "value": "bbc"
+        },
+        {
+          "title": "Belarusian",
+          "value": "be"
+        },
+        {
+          "title": "Bemba (Google Translate only)",
+          "value": "bem"
+        },
+        {
+          "title": "Bengali",
+          "value": "bn"
+        },
+        {
+          "title": "Betawi (Google Translate only)",
+          "value": "bew"
+        },
+        {
+          "title": "Bhojpuri",
+          "value": "bho"
+        },
+        {
+          "title": "Bikol (Google Translate only)",
+          "value": "bik"
+        },
+        {
+          "title": "Bosnian",
+          "value": "bs"
+        },
+        {
+          "title": "Breton",
+          "value": "br"
+        },
+        {
+          "title": "Bulgarian",
+          "value": "bg"
+        },
+        {
+          "title": "Buryat (Google Translate only)",
+          "value": "bua"
+        },
+        {
+          "title": "Cantonese",
+          "value": "yue"
+        },
+        {
+          "title": "Catalan",
+          "value": "ca"
+        },
+        {
+          "title": "Cebuano",
+          "value": "ceb"
+        },
+        {
+          "title": "Chamorro (Google Translate only)",
+          "value": "ch"
+        },
+        {
+          "title": "Chechen (Google Translate only)",
+          "value": "ce"
+        },
+        {
+          "title": "Chichewa (Google Translate only)",
+          "value": "ny"
+        },
+        {
+          "title": "Chinese (Simplified)",
+          "value": "zh-CN"
+        },
+        {
+          "title": "Chinese (Traditional)",
+          "value": "zh-TW"
+        },
+        {
+          "title": "Chuukese (Google Translate only)",
+          "value": "chk"
+        },
+        {
+          "title": "Chuvash (Google Translate only)",
+          "value": "cv"
+        },
+        {
+          "title": "Corsican (Google Translate only)",
+          "value": "co"
+        },
+        {
+          "title": "Crimean Tatar (Cyrillic) (Google Translate only)",
+          "value": "crh"
+        },
+        {
+          "title": "Crimean Tatar (Latin) (Google Translate only)",
+          "value": "crh-Latn"
+        },
+        {
+          "title": "Croatian",
+          "value": "hr"
+        },
+        {
+          "title": "Czech",
+          "value": "cs"
+        },
+        {
+          "title": "Danish",
+          "value": "da"
+        },
+        {
+          "title": "Dari",
+          "value": "fa-AF"
+        },
+        {
+          "title": "Dhivehi (Google Translate only)",
+          "value": "dv"
+        },
+        {
+          "title": "Dinka (Google Translate only)",
+          "value": "din"
+        },
+        {
+          "title": "Dogri (Google Translate only)",
+          "value": "doi"
+        },
+        {
+          "title": "Dombe (Google Translate only)",
+          "value": "dov"
+        },
+        {
+          "title": "Dutch",
+          "value": "nl"
+        },
+        {
+          "title": "Dyula (Google Translate only)",
+          "value": "dyu"
+        },
+        {
+          "title": "Dzongkha (Google Translate only)",
+          "value": "dz"
+        },
+        {
+          "title": "English",
+          "value": "en"
+        },
+        {
+          "title": "English (UK)",
+          "value": "en-GB"
+        },
+        {
+          "title": "English (US)",
+          "value": "en-US"
+        },
+        {
+          "title": "Esperanto",
+          "value": "eo"
+        },
+        {
+          "title": "Estonian",
+          "value": "et"
+        },
+        {
+          "title": "Ewe (Google Translate only)",
+          "value": "ee"
+        },
+        {
+          "title": "Faroese (Google Translate only)",
+          "value": "fo"
+        },
+        {
+          "title": "Fijian (Google Translate only)",
+          "value": "fj"
+        },
+        {
+          "title": "Filipino",
+          "value": "tl"
+        },
+        {
+          "title": "Finnish",
+          "value": "fi"
+        },
+        {
+          "title": "Fon (Google Translate only)",
+          "value": "fon"
+        },
+        {
+          "title": "French",
+          "value": "fr"
+        },
+        {
+          "title": "French (Canada)",
+          "value": "fr-CA"
+        },
+        {
+          "title": "Frisian (Google Translate only)",
+          "value": "fy"
+        },
+        {
+          "title": "Friulian (Google Translate only)",
+          "value": "fur"
+        },
+        {
+          "title": "Fulani (Google Translate only)",
+          "value": "ff"
+        },
+        {
+          "title": "Ga (Google Translate only)",
+          "value": "gaa"
+        },
+        {
+          "title": "Galician",
+          "value": "gl"
+        },
+        {
+          "title": "Georgian",
+          "value": "ka"
+        },
+        {
+          "title": "German",
+          "value": "de"
+        },
+        {
+          "title": "German (Switzerland)",
+          "value": "de-CH"
+        },
+        {
+          "title": "Greek",
+          "value": "el"
+        },
+        {
+          "title": "Guarani",
+          "value": "gn"
+        },
+        {
+          "title": "Gujarati",
+          "value": "gu"
+        },
+        {
+          "title": "Haitian Creole",
+          "value": "ht"
+        },
+        {
+          "title": "Hakha Chin (Google Translate only)",
+          "value": "cnh"
+        },
+        {
+          "title": "Hausa",
+          "value": "ha"
+        },
+        {
+          "title": "Hawaiian (Google Translate only)",
+          "value": "haw"
+        },
+        {
+          "title": "Hebrew",
+          "value": "iw"
+        },
+        {
+          "title": "Hiligaynon (Google Translate only)",
+          "value": "hil"
+        },
+        {
+          "title": "Hindi",
+          "value": "hi"
+        },
+        {
+          "title": "Hmong (Google Translate only)",
+          "value": "hmn"
+        },
+        {
+          "title": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "title": "Hunsrik (Google Translate only)",
+          "value": "hrx"
+        },
+        {
+          "title": "Iban (Google Translate only)",
+          "value": "iba"
+        },
+        {
+          "title": "Icelandic",
+          "value": "is"
+        },
+        {
+          "title": "Igbo",
+          "value": "ig"
+        },
+        {
+          "title": "Ilocano (Google Translate only)",
+          "value": "ilo"
+        },
+        {
+          "title": "Indonesian",
+          "value": "id"
+        },
+        {
+          "title": "Inuktut (Latin) (Google Translate only)",
+          "value": "iu-Latn"
+        },
+        {
+          "title": "Inuktut (Syllabics) (Google Translate only)",
+          "value": "iu"
+        },
+        {
+          "title": "Irish",
+          "value": "ga"
+        },
+        {
+          "title": "Italian",
+          "value": "it"
+        },
+        {
+          "title": "Jamaican Patois (Google Translate only)",
+          "value": "jam"
+        },
+        {
+          "title": "Japanese",
+          "value": "ja"
+        },
+        {
+          "title": "Javanese",
+          "value": "jv"
+        },
+        {
+          "title": "Jingpo (Google Translate only)",
+          "value": "kac"
+        },
+        {
+          "title": "Kalaallisut (Google Translate only)",
+          "value": "kl"
+        },
+        {
+          "title": "Kannada (Google Translate only)",
+          "value": "kn"
+        },
+        {
+          "title": "Kanuri (Google Translate only)",
+          "value": "kr"
+        },
+        {
+          "title": "Kapampangan",
+          "value": "pam"
+        },
+        {
+          "title": "Kazakh",
+          "value": "kk"
+        },
+        {
+          "title": "Khasi (Google Translate only)",
+          "value": "kha"
+        },
+        {
+          "title": "Khmer (Google Translate only)",
+          "value": "km"
+        },
+        {
+          "title": "Kiga (Google Translate only)",
+          "value": "cgg"
+        },
+        {
+          "title": "Kikongo (Google Translate only)",
+          "value": "kg"
+        },
+        {
+          "title": "Kinyarwanda (Google Translate only)",
+          "value": "rw"
+        },
+        {
+          "title": "Kituba (Google Translate only)",
+          "value": "ktu"
+        },
+        {
+          "title": "Kokborok (Google Translate only)",
+          "value": "trp"
+        },
+        {
+          "title": "Komi (Google Translate only)",
+          "value": "kv"
+        },
+        {
+          "title": "Konkani",
+          "value": "gom"
+        },
+        {
+          "title": "Korean",
+          "value": "ko"
+        },
+        {
+          "title": "Krio (Google Translate only)",
+          "value": "kri"
+        },
+        {
+          "title": "Kurdish (Kurmanji)",
+          "value": "ku"
+        },
+        {
+          "title": "Kurdish (Sorani)",
+          "value": "ckb"
+        },
+        {
+          "title": "Kyrgyz",
+          "value": "ky"
+        },
+        {
+          "title": "Lao (Google Translate only)",
+          "value": "lo"
+        },
+        {
+          "title": "Latgalian (Google Translate only)",
+          "value": "ltg"
+        },
+        {
+          "title": "Latin",
+          "value": "la"
+        },
+        {
+          "title": "Latvian",
+          "value": "lv"
+        },
+        {
+          "title": "Ligurian (Google Translate only)",
+          "value": "lij"
+        },
+        {
+          "title": "Limburgish (Google Translate only)",
+          "value": "li"
+        },
+        {
+          "title": "Lingala",
+          "value": "ln"
+        },
+        {
+          "title": "Lithuanian",
+          "value": "lt"
+        },
+        {
+          "title": "Lombard",
+          "value": "lmo"
+        },
+        {
+          "title": "Luganda (Google Translate only)",
+          "value": "lg"
+        },
+        {
+          "title": "Luo (Google Translate only)",
+          "value": "luo"
+        },
+        {
+          "title": "Luxembourgish",
+          "value": "lb"
+        },
+        {
+          "title": "Macedonian",
+          "value": "mk"
+        },
+        {
+          "title": "Madurese (Google Translate only)",
+          "value": "mad"
+        },
+        {
+          "title": "Maithili",
+          "value": "mai"
+        },
+        {
+          "title": "Makassar (Google Translate only)",
+          "value": "mak"
+        },
+        {
+          "title": "Malagasy",
+          "value": "mg"
+        },
+        {
+          "title": "Malay",
+          "value": "ms"
+        },
+        {
+          "title": "Malay (Jawi)",
+          "value": "ms-Arab"
+        },
+        {
+          "title": "Malayalam",
+          "value": "ml"
+        },
+        {
+          "title": "Maltese",
+          "value": "mt"
+        },
+        {
+          "title": "Mam (Google Translate only)",
+          "value": "mam"
+        },
+        {
+          "title": "Manx (Google Translate only)",
+          "value": "gv"
+        },
+        {
+          "title": "Maori",
+          "value": "mi"
+        },
+        {
+          "title": "Marathi",
+          "value": "mr"
+        },
+        {
+          "title": "Marshallese (Google Translate only)",
+          "value": "mh"
+        },
+        {
+          "title": "Marwadi (Google Translate only)",
+          "value": "mwr"
+        },
+        {
+          "title": "Mauritian Creole (Google Translate only)",
+          "value": "mfe"
+        },
+        {
+          "title": "Meadow Mari (Google Translate only)",
+          "value": "chm"
+        },
+        {
+          "title": "Meiteilon (Manipuri) (Google Translate only)",
+          "value": "mni-Mtei"
+        },
+        {
+          "title": "Minang (Google Translate only)",
+          "value": "min"
+        },
+        {
+          "title": "Mizo (Google Translate only)",
+          "value": "lus"
+        },
+        {
+          "title": "Mongolian",
+          "value": "mn"
+        },
+        {
+          "title": "Myanmar (Burmese)",
+          "value": "my"
+        },
+        {
+          "title": "Nahuatl (Eastern Huasteca) (Google Translate only)",
+          "value": "nhe"
+        },
+        {
+          "title": "Ndau (Google Translate only)",
+          "value": "ndc-ZW"
+        },
+        {
+          "title": "Ndebele (South) (Google Translate only)",
+          "value": "nr"
+        },
+        {
+          "title": "Nepalbhasa (Newari) (Google Translate only)",
+          "value": "new"
+        },
+        {
+          "title": "Nepali",
+          "value": "ne"
+        },
+        {
+          "title": "NKo (Google Translate only)",
+          "value": "bm-Nkoo"
+        },
+        {
+          "title": "Norwegian",
+          "value": "no"
+        },
+        {
+          "title": "Nuer (Google Translate only)",
+          "value": "nus"
+        },
+        {
+          "title": "Occitan",
+          "value": "oc"
+        },
+        {
+          "title": "Odia (Oriya) (Google Translate only)",
+          "value": "or"
+        },
+        {
+          "title": "Oromo",
+          "value": "om"
+        },
+        {
+          "title": "Ossetian (Google Translate only)",
+          "value": "os"
+        },
+        {
+          "title": "Pangasinan",
+          "value": "pag"
+        },
+        {
+          "title": "Papiamento (Google Translate only)",
+          "value": "pap"
+        },
+        {
+          "title": "Pashto",
+          "value": "ps"
+        },
+        {
+          "title": "Persian",
+          "value": "fa"
+        },
+        {
+          "title": "Polish",
+          "value": "pl"
+        },
+        {
+          "title": "Portuguese (Brazil)",
+          "value": "pt"
+        },
+        {
+          "title": "Portuguese (Portugal)",
+          "value": "pt-PT"
+        },
+        {
+          "title": "Punjabi (Gurmukhi)",
+          "value": "pa"
+        },
+        {
+          "title": "Punjabi (Shahmukhi)",
+          "value": "pa-Arab"
+        },
+        {
+          "title": "Quechua",
+          "value": "qu"
+        },
+        {
+          "title": "Qʼeqchiʼ (Google Translate only)",
+          "value": "kek"
+        },
+        {
+          "title": "Romani (Google Translate only)",
+          "value": "rom"
+        },
+        {
+          "title": "Romanian",
+          "value": "ro"
+        },
+        {
+          "title": "Rundi (Google Translate only)",
+          "value": "rn"
+        },
+        {
+          "title": "Russian",
+          "value": "ru"
+        },
+        {
+          "title": "Sami (North) (Google Translate only)",
+          "value": "se"
+        },
+        {
+          "title": "Samoan (Google Translate only)",
+          "value": "sm"
+        },
+        {
+          "title": "Sango (Google Translate only)",
+          "value": "sg"
+        },
+        {
+          "title": "Sanskrit",
+          "value": "sa"
+        },
+        {
+          "title": "Santali (Latin) (Google Translate only)",
+          "value": "sat-Latn"
+        },
+        {
+          "title": "Santali (Ol Chiki) (Google Translate only)",
+          "value": "sat"
+        },
+        {
+          "title": "Scots Gaelic (Google Translate only)",
+          "value": "gd"
+        },
+        {
+          "title": "Sepedi (Google Translate only)",
+          "value": "nso"
+        },
+        {
+          "title": "Serbian",
+          "value": "sr"
+        },
+        {
+          "title": "Sesotho",
+          "value": "st"
+        },
+        {
+          "title": "Seychellois Creole (Google Translate only)",
+          "value": "crs"
+        },
+        {
+          "title": "Shan (Google Translate only)",
+          "value": "shn"
+        },
+        {
+          "title": "Shona (Google Translate only)",
+          "value": "sn"
+        },
+        {
+          "title": "Sicilian",
+          "value": "scn"
+        },
+        {
+          "title": "Silesian (Google Translate only)",
+          "value": "szl"
+        },
+        {
+          "title": "Sindhi (Google Translate only)",
+          "value": "sd"
+        },
+        {
+          "title": "Sinhala (Google Translate only)",
+          "value": "si"
+        },
+        {
+          "title": "Slovak",
+          "value": "sk"
+        },
+        {
+          "title": "Slovenian",
+          "value": "sl"
+        },
+        {
+          "title": "Somali (Google Translate only)",
+          "value": "so"
+        },
+        {
+          "title": "Spanish",
+          "value": "es"
+        },
+        {
+          "title": "Spanish (Latin America)",
+          "value": "es-419"
+        },
+        {
+          "title": "Sundanese",
+          "value": "su"
+        },
+        {
+          "title": "Susu (Google Translate only)",
+          "value": "sus"
+        },
+        {
+          "title": "Swahili",
+          "value": "sw"
+        },
+        {
+          "title": "Swati (Google Translate only)",
+          "value": "ss"
+        },
+        {
+          "title": "Swedish",
+          "value": "sv"
+        },
+        {
+          "title": "Tahitian (Google Translate only)",
+          "value": "ty"
+        },
+        {
+          "title": "Tajik",
+          "value": "tg"
+        },
+        {
+          "title": "Tamazight (Google Translate only)",
+          "value": "ber-Latn"
+        },
+        {
+          "title": "Tamazight (Tifinagh) (Google Translate only)",
+          "value": "ber"
+        },
+        {
+          "title": "Tamil",
+          "value": "ta"
+        },
+        {
+          "title": "Tatar",
+          "value": "tt"
+        },
+        {
+          "title": "Telugu",
+          "value": "te"
+        },
+        {
+          "title": "Tetum (Google Translate only)",
+          "value": "tet"
+        },
+        {
+          "title": "Thai",
+          "value": "th"
+        },
+        {
+          "title": "Tibetan (Google Translate only)",
+          "value": "bo"
+        },
+        {
+          "title": "Tigrinya (Google Translate only)",
+          "value": "ti"
+        },
+        {
+          "title": "Tiv (Google Translate only)",
+          "value": "tiv"
+        },
+        {
+          "title": "Tok Pisin (Google Translate only)",
+          "value": "tpi"
+        },
+        {
+          "title": "Tongan (Google Translate only)",
+          "value": "to"
+        },
+        {
+          "title": "Tshiluba (Google Translate only)",
+          "value": "lua"
+        },
+        {
+          "title": "Tsonga",
+          "value": "ts"
+        },
+        {
+          "title": "Tswana",
+          "value": "tn"
+        },
+        {
+          "title": "Tulu (Google Translate only)",
+          "value": "tcy"
+        },
+        {
+          "title": "Tumbuka (Google Translate only)",
+          "value": "tum"
+        },
+        {
+          "title": "Turkish",
+          "value": "tr"
+        },
+        {
+          "title": "Turkmen",
+          "value": "tk"
+        },
+        {
+          "title": "Tuvan (Google Translate only)",
+          "value": "tyv"
+        },
+        {
+          "title": "Twi (Google Translate only)",
+          "value": "ak"
+        },
+        {
+          "title": "Udmurt (Google Translate only)",
+          "value": "udm"
+        },
+        {
+          "title": "Ukrainian",
+          "value": "uk"
+        },
+        {
+          "title": "Urdu",
+          "value": "ur"
+        },
+        {
+          "title": "Uyghur (Google Translate only)",
+          "value": "ug"
+        },
+        {
+          "title": "Uzbek",
+          "value": "uz"
+        },
+        {
+          "title": "Venda (Google Translate only)",
+          "value": "ve"
+        },
+        {
+          "title": "Venetian (Google Translate only)",
+          "value": "vec"
+        },
+        {
+          "title": "Vietnamese",
+          "value": "vi"
+        },
+        {
+          "title": "Waray (Google Translate only)",
+          "value": "war"
+        },
+        {
+          "title": "Welsh",
+          "value": "cy"
+        },
+        {
+          "title": "Wolof",
+          "value": "wo"
+        },
+        {
+          "title": "Xhosa",
+          "value": "xh"
+        },
+        {
+          "title": "Yakut (Google Translate only)",
+          "value": "sah"
+        },
+        {
+          "title": "Yiddish",
+          "value": "yi"
+        },
+        {
+          "title": "Yoruba (Google Translate only)",
+          "value": "yo"
+        },
+        {
+          "title": "Yucatec Maya (Google Translate only)",
+          "value": "yua"
+        },
+        {
+          "title": "Zapotec (Google Translate only)",
+          "value": "zap"
+        },
+        {
+          "title": "Zulu",
+          "value": "zu"
+        }
+      ]
+    },
+    {
+      "name": "lang2",
+      "title": "Secondary Language",
+      "description": "Used when the text is already in the primary language",
+      "type": "dropdown",
+      "required": false,
+      "default": "en",
+      "data": [
+        {
+          "title": "Abkhaz (Google Translate only)",
+          "value": "ab"
+        },
+        {
+          "title": "Acehnese",
+          "value": "ace"
+        },
+        {
+          "title": "Acholi (Google Translate only)",
+          "value": "ach"
+        },
+        {
+          "title": "Afar (Google Translate only)",
+          "value": "aa"
+        },
+        {
+          "title": "Afrikaans",
+          "value": "af"
+        },
+        {
+          "title": "Albanian",
+          "value": "sq"
+        },
+        {
+          "title": "Alur (Google Translate only)",
+          "value": "alz"
+        },
+        {
+          "title": "Amharic (Google Translate only)",
+          "value": "am"
+        },
+        {
+          "title": "Arabic",
+          "value": "ar"
+        },
+        {
+          "title": "Aragonese (DeepL only)",
+          "value": "an"
+        },
+        {
+          "title": "Armenian",
+          "value": "hy"
+        },
+        {
+          "title": "Assamese",
+          "value": "as"
+        },
+        {
+          "title": "Avar (Google Translate only)",
+          "value": "av"
+        },
+        {
+          "title": "Awadhi (Google Translate only)",
+          "value": "awa"
+        },
+        {
+          "title": "Aymara",
+          "value": "ay"
+        },
+        {
+          "title": "Azerbaijani",
+          "value": "az"
+        },
+        {
+          "title": "Balinese (Google Translate only)",
+          "value": "ban"
+        },
+        {
+          "title": "Baluchi (Google Translate only)",
+          "value": "bal"
+        },
+        {
+          "title": "Bambara (Google Translate only)",
+          "value": "bm"
+        },
+        {
+          "title": "Baoulé (Google Translate only)",
+          "value": "bci"
+        },
+        {
+          "title": "Bashkir",
+          "value": "ba"
+        },
+        {
+          "title": "Basque",
+          "value": "eu"
+        },
+        {
+          "title": "Batak Karo (Google Translate only)",
+          "value": "btx"
+        },
+        {
+          "title": "Batak Simalungun (Google Translate only)",
+          "value": "bts"
+        },
+        {
+          "title": "Batak Toba (Google Translate only)",
+          "value": "bbc"
+        },
+        {
+          "title": "Belarusian",
+          "value": "be"
+        },
+        {
+          "title": "Bemba (Google Translate only)",
+          "value": "bem"
+        },
+        {
+          "title": "Bengali",
+          "value": "bn"
+        },
+        {
+          "title": "Betawi (Google Translate only)",
+          "value": "bew"
+        },
+        {
+          "title": "Bhojpuri",
+          "value": "bho"
+        },
+        {
+          "title": "Bikol (Google Translate only)",
+          "value": "bik"
+        },
+        {
+          "title": "Bosnian",
+          "value": "bs"
+        },
+        {
+          "title": "Breton",
+          "value": "br"
+        },
+        {
+          "title": "Bulgarian",
+          "value": "bg"
+        },
+        {
+          "title": "Buryat (Google Translate only)",
+          "value": "bua"
+        },
+        {
+          "title": "Cantonese",
+          "value": "yue"
+        },
+        {
+          "title": "Catalan",
+          "value": "ca"
+        },
+        {
+          "title": "Cebuano",
+          "value": "ceb"
+        },
+        {
+          "title": "Chamorro (Google Translate only)",
+          "value": "ch"
+        },
+        {
+          "title": "Chechen (Google Translate only)",
+          "value": "ce"
+        },
+        {
+          "title": "Chichewa (Google Translate only)",
+          "value": "ny"
+        },
+        {
+          "title": "Chinese (Simplified)",
+          "value": "zh-CN"
+        },
+        {
+          "title": "Chinese (Traditional)",
+          "value": "zh-TW"
+        },
+        {
+          "title": "Chuukese (Google Translate only)",
+          "value": "chk"
+        },
+        {
+          "title": "Chuvash (Google Translate only)",
+          "value": "cv"
+        },
+        {
+          "title": "Corsican (Google Translate only)",
+          "value": "co"
+        },
+        {
+          "title": "Crimean Tatar (Cyrillic) (Google Translate only)",
+          "value": "crh"
+        },
+        {
+          "title": "Crimean Tatar (Latin) (Google Translate only)",
+          "value": "crh-Latn"
+        },
+        {
+          "title": "Croatian",
+          "value": "hr"
+        },
+        {
+          "title": "Czech",
+          "value": "cs"
+        },
+        {
+          "title": "Danish",
+          "value": "da"
+        },
+        {
+          "title": "Dari",
+          "value": "fa-AF"
+        },
+        {
+          "title": "Dhivehi (Google Translate only)",
+          "value": "dv"
+        },
+        {
+          "title": "Dinka (Google Translate only)",
+          "value": "din"
+        },
+        {
+          "title": "Dogri (Google Translate only)",
+          "value": "doi"
+        },
+        {
+          "title": "Dombe (Google Translate only)",
+          "value": "dov"
+        },
+        {
+          "title": "Dutch",
+          "value": "nl"
+        },
+        {
+          "title": "Dyula (Google Translate only)",
+          "value": "dyu"
+        },
+        {
+          "title": "Dzongkha (Google Translate only)",
+          "value": "dz"
+        },
+        {
+          "title": "English",
+          "value": "en"
+        },
+        {
+          "title": "English (UK)",
+          "value": "en-GB"
+        },
+        {
+          "title": "English (US)",
+          "value": "en-US"
+        },
+        {
+          "title": "Esperanto",
+          "value": "eo"
+        },
+        {
+          "title": "Estonian",
+          "value": "et"
+        },
+        {
+          "title": "Ewe (Google Translate only)",
+          "value": "ee"
+        },
+        {
+          "title": "Faroese (Google Translate only)",
+          "value": "fo"
+        },
+        {
+          "title": "Fijian (Google Translate only)",
+          "value": "fj"
+        },
+        {
+          "title": "Filipino",
+          "value": "tl"
+        },
+        {
+          "title": "Finnish",
+          "value": "fi"
+        },
+        {
+          "title": "Fon (Google Translate only)",
+          "value": "fon"
+        },
+        {
+          "title": "French",
+          "value": "fr"
+        },
+        {
+          "title": "French (Canada)",
+          "value": "fr-CA"
+        },
+        {
+          "title": "Frisian (Google Translate only)",
+          "value": "fy"
+        },
+        {
+          "title": "Friulian (Google Translate only)",
+          "value": "fur"
+        },
+        {
+          "title": "Fulani (Google Translate only)",
+          "value": "ff"
+        },
+        {
+          "title": "Ga (Google Translate only)",
+          "value": "gaa"
+        },
+        {
+          "title": "Galician",
+          "value": "gl"
+        },
+        {
+          "title": "Georgian",
+          "value": "ka"
+        },
+        {
+          "title": "German",
+          "value": "de"
+        },
+        {
+          "title": "German (Switzerland)",
+          "value": "de-CH"
+        },
+        {
+          "title": "Greek",
+          "value": "el"
+        },
+        {
+          "title": "Guarani",
+          "value": "gn"
+        },
+        {
+          "title": "Gujarati",
+          "value": "gu"
+        },
+        {
+          "title": "Haitian Creole",
+          "value": "ht"
+        },
+        {
+          "title": "Hakha Chin (Google Translate only)",
+          "value": "cnh"
+        },
+        {
+          "title": "Hausa",
+          "value": "ha"
+        },
+        {
+          "title": "Hawaiian (Google Translate only)",
+          "value": "haw"
+        },
+        {
+          "title": "Hebrew",
+          "value": "iw"
+        },
+        {
+          "title": "Hiligaynon (Google Translate only)",
+          "value": "hil"
+        },
+        {
+          "title": "Hindi",
+          "value": "hi"
+        },
+        {
+          "title": "Hmong (Google Translate only)",
+          "value": "hmn"
+        },
+        {
+          "title": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "title": "Hunsrik (Google Translate only)",
+          "value": "hrx"
+        },
+        {
+          "title": "Iban (Google Translate only)",
+          "value": "iba"
+        },
+        {
+          "title": "Icelandic",
+          "value": "is"
+        },
+        {
+          "title": "Igbo",
+          "value": "ig"
+        },
+        {
+          "title": "Ilocano (Google Translate only)",
+          "value": "ilo"
+        },
+        {
+          "title": "Indonesian",
+          "value": "id"
+        },
+        {
+          "title": "Inuktut (Latin) (Google Translate only)",
+          "value": "iu-Latn"
+        },
+        {
+          "title": "Inuktut (Syllabics) (Google Translate only)",
+          "value": "iu"
+        },
+        {
+          "title": "Irish",
+          "value": "ga"
+        },
+        {
+          "title": "Italian",
+          "value": "it"
+        },
+        {
+          "title": "Jamaican Patois (Google Translate only)",
+          "value": "jam"
+        },
+        {
+          "title": "Japanese",
+          "value": "ja"
+        },
+        {
+          "title": "Javanese",
+          "value": "jv"
+        },
+        {
+          "title": "Jingpo (Google Translate only)",
+          "value": "kac"
+        },
+        {
+          "title": "Kalaallisut (Google Translate only)",
+          "value": "kl"
+        },
+        {
+          "title": "Kannada (Google Translate only)",
+          "value": "kn"
+        },
+        {
+          "title": "Kanuri (Google Translate only)",
+          "value": "kr"
+        },
+        {
+          "title": "Kapampangan",
+          "value": "pam"
+        },
+        {
+          "title": "Kazakh",
+          "value": "kk"
+        },
+        {
+          "title": "Khasi (Google Translate only)",
+          "value": "kha"
+        },
+        {
+          "title": "Khmer (Google Translate only)",
+          "value": "km"
+        },
+        {
+          "title": "Kiga (Google Translate only)",
+          "value": "cgg"
+        },
+        {
+          "title": "Kikongo (Google Translate only)",
+          "value": "kg"
+        },
+        {
+          "title": "Kinyarwanda (Google Translate only)",
+          "value": "rw"
+        },
+        {
+          "title": "Kituba (Google Translate only)",
+          "value": "ktu"
+        },
+        {
+          "title": "Kokborok (Google Translate only)",
+          "value": "trp"
+        },
+        {
+          "title": "Komi (Google Translate only)",
+          "value": "kv"
+        },
+        {
+          "title": "Konkani",
+          "value": "gom"
+        },
+        {
+          "title": "Korean",
+          "value": "ko"
+        },
+        {
+          "title": "Krio (Google Translate only)",
+          "value": "kri"
+        },
+        {
+          "title": "Kurdish (Kurmanji)",
+          "value": "ku"
+        },
+        {
+          "title": "Kurdish (Sorani)",
+          "value": "ckb"
+        },
+        {
+          "title": "Kyrgyz",
+          "value": "ky"
+        },
+        {
+          "title": "Lao (Google Translate only)",
+          "value": "lo"
+        },
+        {
+          "title": "Latgalian (Google Translate only)",
+          "value": "ltg"
+        },
+        {
+          "title": "Latin",
+          "value": "la"
+        },
+        {
+          "title": "Latvian",
+          "value": "lv"
+        },
+        {
+          "title": "Ligurian (Google Translate only)",
+          "value": "lij"
+        },
+        {
+          "title": "Limburgish (Google Translate only)",
+          "value": "li"
+        },
+        {
+          "title": "Lingala",
+          "value": "ln"
+        },
+        {
+          "title": "Lithuanian",
+          "value": "lt"
+        },
+        {
+          "title": "Lombard",
+          "value": "lmo"
+        },
+        {
+          "title": "Luganda (Google Translate only)",
+          "value": "lg"
+        },
+        {
+          "title": "Luo (Google Translate only)",
+          "value": "luo"
+        },
+        {
+          "title": "Luxembourgish",
+          "value": "lb"
+        },
+        {
+          "title": "Macedonian",
+          "value": "mk"
+        },
+        {
+          "title": "Madurese (Google Translate only)",
+          "value": "mad"
+        },
+        {
+          "title": "Maithili",
+          "value": "mai"
+        },
+        {
+          "title": "Makassar (Google Translate only)",
+          "value": "mak"
+        },
+        {
+          "title": "Malagasy",
+          "value": "mg"
+        },
+        {
+          "title": "Malay",
+          "value": "ms"
+        },
+        {
+          "title": "Malay (Jawi)",
+          "value": "ms-Arab"
+        },
+        {
+          "title": "Malayalam",
+          "value": "ml"
+        },
+        {
+          "title": "Maltese",
+          "value": "mt"
+        },
+        {
+          "title": "Mam (Google Translate only)",
+          "value": "mam"
+        },
+        {
+          "title": "Manx (Google Translate only)",
+          "value": "gv"
+        },
+        {
+          "title": "Maori",
+          "value": "mi"
+        },
+        {
+          "title": "Marathi",
+          "value": "mr"
+        },
+        {
+          "title": "Marshallese (Google Translate only)",
+          "value": "mh"
+        },
+        {
+          "title": "Marwadi (Google Translate only)",
+          "value": "mwr"
+        },
+        {
+          "title": "Mauritian Creole (Google Translate only)",
+          "value": "mfe"
+        },
+        {
+          "title": "Meadow Mari (Google Translate only)",
+          "value": "chm"
+        },
+        {
+          "title": "Meiteilon (Manipuri) (Google Translate only)",
+          "value": "mni-Mtei"
+        },
+        {
+          "title": "Minang (Google Translate only)",
+          "value": "min"
+        },
+        {
+          "title": "Mizo (Google Translate only)",
+          "value": "lus"
+        },
+        {
+          "title": "Mongolian",
+          "value": "mn"
+        },
+        {
+          "title": "Myanmar (Burmese)",
+          "value": "my"
+        },
+        {
+          "title": "Nahuatl (Eastern Huasteca) (Google Translate only)",
+          "value": "nhe"
+        },
+        {
+          "title": "Ndau (Google Translate only)",
+          "value": "ndc-ZW"
+        },
+        {
+          "title": "Ndebele (South) (Google Translate only)",
+          "value": "nr"
+        },
+        {
+          "title": "Nepalbhasa (Newari) (Google Translate only)",
+          "value": "new"
+        },
+        {
+          "title": "Nepali",
+          "value": "ne"
+        },
+        {
+          "title": "NKo (Google Translate only)",
+          "value": "bm-Nkoo"
+        },
+        {
+          "title": "Norwegian",
+          "value": "no"
+        },
+        {
+          "title": "Nuer (Google Translate only)",
+          "value": "nus"
+        },
+        {
+          "title": "Occitan",
+          "value": "oc"
+        },
+        {
+          "title": "Odia (Oriya) (Google Translate only)",
+          "value": "or"
+        },
+        {
+          "title": "Oromo",
+          "value": "om"
+        },
+        {
+          "title": "Ossetian (Google Translate only)",
+          "value": "os"
+        },
+        {
+          "title": "Pangasinan",
+          "value": "pag"
+        },
+        {
+          "title": "Papiamento (Google Translate only)",
+          "value": "pap"
+        },
+        {
+          "title": "Pashto",
+          "value": "ps"
+        },
+        {
+          "title": "Persian",
+          "value": "fa"
+        },
+        {
+          "title": "Polish",
+          "value": "pl"
+        },
+        {
+          "title": "Portuguese (Brazil)",
+          "value": "pt"
+        },
+        {
+          "title": "Portuguese (Portugal)",
+          "value": "pt-PT"
+        },
+        {
+          "title": "Punjabi (Gurmukhi)",
+          "value": "pa"
+        },
+        {
+          "title": "Punjabi (Shahmukhi)",
+          "value": "pa-Arab"
+        },
+        {
+          "title": "Quechua",
+          "value": "qu"
+        },
+        {
+          "title": "Qʼeqchiʼ (Google Translate only)",
+          "value": "kek"
+        },
+        {
+          "title": "Romani (Google Translate only)",
+          "value": "rom"
+        },
+        {
+          "title": "Romanian",
+          "value": "ro"
+        },
+        {
+          "title": "Rundi (Google Translate only)",
+          "value": "rn"
+        },
+        {
+          "title": "Russian",
+          "value": "ru"
+        },
+        {
+          "title": "Sami (North) (Google Translate only)",
+          "value": "se"
+        },
+        {
+          "title": "Samoan (Google Translate only)",
+          "value": "sm"
+        },
+        {
+          "title": "Sango (Google Translate only)",
+          "value": "sg"
+        },
+        {
+          "title": "Sanskrit",
+          "value": "sa"
+        },
+        {
+          "title": "Santali (Latin) (Google Translate only)",
+          "value": "sat-Latn"
+        },
+        {
+          "title": "Santali (Ol Chiki) (Google Translate only)",
+          "value": "sat"
+        },
+        {
+          "title": "Scots Gaelic (Google Translate only)",
+          "value": "gd"
+        },
+        {
+          "title": "Sepedi (Google Translate only)",
+          "value": "nso"
+        },
+        {
+          "title": "Serbian",
+          "value": "sr"
+        },
+        {
+          "title": "Sesotho",
+          "value": "st"
+        },
+        {
+          "title": "Seychellois Creole (Google Translate only)",
+          "value": "crs"
+        },
+        {
+          "title": "Shan (Google Translate only)",
+          "value": "shn"
+        },
+        {
+          "title": "Shona (Google Translate only)",
+          "value": "sn"
+        },
+        {
+          "title": "Sicilian",
+          "value": "scn"
+        },
+        {
+          "title": "Silesian (Google Translate only)",
+          "value": "szl"
+        },
+        {
+          "title": "Sindhi (Google Translate only)",
+          "value": "sd"
+        },
+        {
+          "title": "Sinhala (Google Translate only)",
+          "value": "si"
+        },
+        {
+          "title": "Slovak",
+          "value": "sk"
+        },
+        {
+          "title": "Slovenian",
+          "value": "sl"
+        },
+        {
+          "title": "Somali (Google Translate only)",
+          "value": "so"
+        },
+        {
+          "title": "Spanish",
+          "value": "es"
+        },
+        {
+          "title": "Spanish (Latin America)",
+          "value": "es-419"
+        },
+        {
+          "title": "Sundanese",
+          "value": "su"
+        },
+        {
+          "title": "Susu (Google Translate only)",
+          "value": "sus"
+        },
+        {
+          "title": "Swahili",
+          "value": "sw"
+        },
+        {
+          "title": "Swati (Google Translate only)",
+          "value": "ss"
+        },
+        {
+          "title": "Swedish",
+          "value": "sv"
+        },
+        {
+          "title": "Tahitian (Google Translate only)",
+          "value": "ty"
+        },
+        {
+          "title": "Tajik",
+          "value": "tg"
+        },
+        {
+          "title": "Tamazight (Google Translate only)",
+          "value": "ber-Latn"
+        },
+        {
+          "title": "Tamazight (Tifinagh) (Google Translate only)",
+          "value": "ber"
+        },
+        {
+          "title": "Tamil",
+          "value": "ta"
+        },
+        {
+          "title": "Tatar",
+          "value": "tt"
+        },
+        {
+          "title": "Telugu",
+          "value": "te"
+        },
+        {
+          "title": "Tetum (Google Translate only)",
+          "value": "tet"
+        },
+        {
+          "title": "Thai",
+          "value": "th"
+        },
+        {
+          "title": "Tibetan (Google Translate only)",
+          "value": "bo"
+        },
+        {
+          "title": "Tigrinya (Google Translate only)",
+          "value": "ti"
+        },
+        {
+          "title": "Tiv (Google Translate only)",
+          "value": "tiv"
+        },
+        {
+          "title": "Tok Pisin (Google Translate only)",
+          "value": "tpi"
+        },
+        {
+          "title": "Tongan (Google Translate only)",
+          "value": "to"
+        },
+        {
+          "title": "Tshiluba (Google Translate only)",
+          "value": "lua"
+        },
+        {
+          "title": "Tsonga",
+          "value": "ts"
+        },
+        {
+          "title": "Tswana",
+          "value": "tn"
+        },
+        {
+          "title": "Tulu (Google Translate only)",
+          "value": "tcy"
+        },
+        {
+          "title": "Tumbuka (Google Translate only)",
+          "value": "tum"
+        },
+        {
+          "title": "Turkish",
+          "value": "tr"
+        },
+        {
+          "title": "Turkmen",
+          "value": "tk"
+        },
+        {
+          "title": "Tuvan (Google Translate only)",
+          "value": "tyv"
+        },
+        {
+          "title": "Twi (Google Translate only)",
+          "value": "ak"
+        },
+        {
+          "title": "Udmurt (Google Translate only)",
+          "value": "udm"
+        },
+        {
+          "title": "Ukrainian",
+          "value": "uk"
+        },
+        {
+          "title": "Urdu",
+          "value": "ur"
+        },
+        {
+          "title": "Uyghur (Google Translate only)",
+          "value": "ug"
+        },
+        {
+          "title": "Uzbek",
+          "value": "uz"
+        },
+        {
+          "title": "Venda (Google Translate only)",
+          "value": "ve"
+        },
+        {
+          "title": "Venetian (Google Translate only)",
+          "value": "vec"
+        },
+        {
+          "title": "Vietnamese",
+          "value": "vi"
+        },
+        {
+          "title": "Waray (Google Translate only)",
+          "value": "war"
+        },
+        {
+          "title": "Welsh",
+          "value": "cy"
+        },
+        {
+          "title": "Wolof",
+          "value": "wo"
+        },
+        {
+          "title": "Xhosa",
+          "value": "xh"
+        },
+        {
+          "title": "Yakut (Google Translate only)",
+          "value": "sah"
+        },
+        {
+          "title": "Yiddish",
+          "value": "yi"
+        },
+        {
+          "title": "Yoruba (Google Translate only)",
+          "value": "yo"
+        },
+        {
+          "title": "Yucatec Maya (Google Translate only)",
+          "value": "yua"
+        },
+        {
+          "title": "Zapotec (Google Translate only)",
+          "value": "zap"
+        },
+        {
+          "title": "Zulu",
+          "value": "zu"
+        }
+      ]
+    },
+    {
+      "name": "autoInput",
+      "title": "Autofill Input",
+      "label": "Fill the input with the selected text",
+      "description": "Views start with the selected text (or the clipboard, see Text Source)",
+      "type": "checkbox",
+      "required": false,
+      "default": true
+    },
+    {
+      "name": "textSource",
+      "title": "Text Source",
+      "description": "Where views and Instant Translate commands take the text from",
+      "type": "dropdown",
+      "required": false,
+      "default": "selection",
+      "data": [
+        {
+          "title": "Selected text",
+          "value": "selection"
+        },
+        {
+          "title": "Selected text, then clipboard",
+          "value": "selectionOrClipboard"
+        },
+        {
+          "title": "Clipboard, then selected text",
+          "value": "clipboard"
+        }
+      ]
+    },
+    {
+      "name": "defaultAction",
+      "title": "Default Action",
+      "description": "What Enter does with a translation",
+      "type": "dropdown",
+      "required": false,
+      "default": "copy",
+      "data": [
+        {
+          "title": "Copy to Clipboard",
+          "value": "copy"
+        },
+        {
+          "title": "Paste to Active Window",
+          "value": "paste"
+        }
+      ]
+    },
+    {
+      "name": "prioritizeCrossLanguage",
+      "title": "Result Ordering",
+      "label": "Prioritize cross-language translations",
+      "description": "When the text is already in one of the target languages, move that result (e.g. English → English) to the bottom",
+      "type": "checkbox",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "instantViewStyle",
+      "title": "Instant Translate View",
+      "description": "How Instant Translate View shows the translation",
+      "type": "dropdown",
+      "required": false,
+      "default": "notification",
+      "data": [
+        {
+          "title": "Desktop notification",
+          "value": "notification"
+        },
+        {
+          "title": "HUD",
+          "value": "hud"
+        }
+      ]
+    },
+    {
+      "name": "ttsPlayer",
+      "title": "Text-to-Speech Player",
+      "description": "Command that plays an MP3 file, {file} is replaced with its path. Empty means the first of mpv, ffplay, mpg123, pw-play, cvlc",
+      "type": "textfield",
+      "required": false,
+      "placeholder": "mpv --volume=80 {file}"
+    },
+    {
+      "name": "proxy",
+      "title": "HTTP Proxy URL",
+      "description": "Proxy for all requests, e.g. http://proxy.example.com:8080",
+      "type": "textfield",
+      "required": false,
+      "placeholder": "http://proxy.example.com:8080"
+    }
+  ],
+  "scripts": {
+    "build": "vici build",
+    "dev": "vici develop",
+    "format": "biome format --write src test scripts",
+    "lint": "vici lint",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "sync-manifest": "tsx scripts/sync-manifest.ts"
+  },
+  "dependencies": {
+    "@vicinae/api": "^0.29.2",
+    "undici": "^6.21.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.2",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.2"
+  }
+}

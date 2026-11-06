@@ -1,0 +1,18 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"include": ["src/**/*", "test/**/*", "scripts/**/*"],
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2022",
+		"lib": ["es2023", "dom"],
+		"strict": true,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"types": ["node"]
+	}
+}
