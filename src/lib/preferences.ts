@@ -17,6 +17,7 @@ export interface Settings {
 	lang1: string;
 	lang2: string;
 	autoInput: boolean;
+	instantClipboard: boolean;
 	translateOnType: boolean;
 	showPronunciation: boolean;
 	listLayout: ListLayout;
@@ -34,6 +35,7 @@ const DEFAULTS: Settings = {
 	lang1: "en",
 	lang2: "en",
 	autoInput: true,
+	instantClipboard: true,
 	translateOnType: true,
 	showPronunciation: true,
 	listLayout: "compact",
