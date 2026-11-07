@@ -17,12 +17,7 @@ import {
 	SpeakAction,
 } from "./components/actions";
 import { LanguageSetsList } from "./components/LanguageSets";
-import {
-	TRANSLATE_DEBOUNCE_MS,
-	useAsync,
-	useDebouncedValue,
-	useTextState,
-} from "./lib/hooks";
+import { useAsync, useTextState, useTranslationQuery } from "./lib/hooks";
 import { AUTO_DETECT, languageName, sortByName } from "./lib/languages";
 import { getSettings, providerSettings } from "./lib/preferences";
 import {
@@ -57,6 +52,8 @@ function languageItems(
 	return items;
 }
 
+const ignoreEdit = () => {};
+
 const FORMALITY_OPTIONS: { value: Formality; title: string }[] = [
 	{ value: "default", title: "Default" },
 	{ value: "prefer_more", title: "More formal (polite)" },
@@ -74,7 +71,10 @@ export default function TranslateForm(props: LaunchProps) {
 	const langFrom = languageSet.langFrom;
 	const langTo = languageSet.langTo[0] ?? "en";
 	const [text, setText] = useTextState(props.fallbackText);
-	const debounced = useDebouncedValue(text, TRANSLATE_DEBOUNCE_MS);
+	const { query, pending, submit } = useTranslationQuery(
+		text,
+		`${provider.id}:${langFrom}:${langTo}:${formality}`,
+	);
 	const textRef = useRef<Form.TextArea>(null);
 	const fromRef = useRef<Form.Dropdown>(null);
 	const toRef = useRef<Form.Dropdown>(null);
@@ -85,21 +85,23 @@ export default function TranslateForm(props: LaunchProps) {
 		isLoading,
 	} = useAsync(
 		async (signal) => {
-			if (!debounced.trim()) return undefined;
+			if (!query) return undefined;
 			return translateText(
 				{
 					provider,
 					settings: { ...providerSettings(settings), formality },
 					signal,
 				},
-				debounced,
+				query,
 				langFrom,
 				langTo,
 			);
 		},
-		[debounced, provider.id, langFrom, langTo, formality],
+		[query, provider.id, langFrom, langTo, formality],
 	);
-	const translation = debounced.trim() ? (result?.translatedText ?? "") : "";
+	const translation = query ? (result?.translatedText ?? "") : "";
+	const pronunciation =
+		query && settings.showPronunciation ? result?.pronunciation : undefined;
 	const detected =
 		langFrom === AUTO_DETECT && result?.detected ? result.from : undefined;
 
@@ -130,9 +132,19 @@ export default function TranslateForm(props: LaunchProps) {
 	return (
 		<Form
 			navigationTitle={`Translate Form · ${provider.name}`}
-			isLoading={isLoading && Boolean(debounced.trim())}
+			isLoading={isLoading && Boolean(query)}
 			actions={
 				<ActionPanel>
+					{pending && (
+						<ActionPanel.Section>
+							<Action
+								title="Translate"
+								icon={Icon.Globe01}
+								shortcut={SHORTCUTS.translate}
+								onAction={submit}
+							/>
+						</ActionPanel.Section>
+					)}
 					<ActionPanel.Section>
 						<CopyPasteActions value={translation} label="Translation" />
 						<Action.CopyToClipboard
@@ -140,10 +152,10 @@ export default function TranslateForm(props: LaunchProps) {
 							content={text}
 							shortcut={SHORTCUTS.copyOriginal}
 						/>
-						{result?.pronunciation && (
+						{pronunciation && (
 							<Action.CopyToClipboard
 								title="Copy Pronunciation"
-								content={result.pronunciation}
+								content={pronunciation}
 								shortcut={SHORTCUTS.copyPronunciation}
 							/>
 						)}
@@ -227,9 +239,6 @@ export default function TranslateForm(props: LaunchProps) {
 					/>
 				))}
 			</Form.Dropdown>
-			{detected && (
-				<Form.Description title="Detected" text={languageName(detected)} />
-			)}
 			<Form.Dropdown
 				id="to"
 				title="To"
@@ -248,6 +257,26 @@ export default function TranslateForm(props: LaunchProps) {
 					/>
 				))}
 			</Form.Dropdown>
+			<Form.Separator />
+			{/* Optional items go below the translation: an item inserted above a field
+			    makes Vicinae recreate that field with its previous value. */}
+			<Form.TextArea
+				id="translation"
+				title="Translation"
+				placeholder={
+					pending ? "Run Translate (Ctrl+Enter) to translate" : "Translation"
+				}
+				value={translation}
+				// Vicinae reports programmatic changes of a field as edits and ignores
+				// later values unless the field has onChange to sync its event count.
+				onChange={ignoreEdit}
+			/>
+			{pronunciation && (
+				<Form.Description title="Pronunciation" text={pronunciation} />
+			)}
+			{detected && (
+				<Form.Description title="Detected" text={languageName(detected)} />
+			)}
 			{provider.supportsFormality && (
 				<Form.Dropdown
 					id="formality"
@@ -265,17 +294,7 @@ export default function TranslateForm(props: LaunchProps) {
 					))}
 				</Form.Dropdown>
 			)}
-			<Form.Separator />
-			<Form.TextArea
-				id="translation"
-				title="Translation"
-				placeholder="Translation"
-				value={translation}
-			/>
-			{result?.pronunciation && debounced.trim() && (
-				<Form.Description title="Pronunciation" text={result.pronunciation} />
-			)}
-			{error && debounced.trim() && (
+			{error && query && (
 				<Form.Description
 					title="Error"
 					text={error.detail ? `${error.title}. ${error.detail}` : error.title}

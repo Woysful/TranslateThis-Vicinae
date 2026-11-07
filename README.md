@@ -1,6 +1,6 @@
 # TranslateThis [Vicinae extension]
 
-A translator for [Vicinae](https://github.com/vicinaehq/vicinae) with selectable providers: **Google Translate** (no setup) and **DeepL** (your own API key). Translate as you type, to several languages at once, or straight from the selected text with one hotkey.
+A translator for [Vicinae](https://github.com/vicinaehq/vicinae) with selectable providers: **Google Translate** (no setup) and **DeepL** (your own API key). Translate as you type (or on Enter, to save API characters), to several languages at once, or straight into the clipboard or the previous window.
 
 > Built on the ideas of the Raycast [Google Translate](https://github.com/raycast/extensions/tree/main/extensions/google-translate) extension, rewritten for Vicinae with a provider layer, so more services can be added later.
 
@@ -9,9 +9,10 @@ A translator for [Vicinae](https://github.com/vicinaehq/vicinae) with selectable
 - Two providers: Google Translate and DeepL (Free and Pro keys). Pick the default in the preferences, switch with `Ctrl+Shift+P` in any view
 - **Language sets**: a source language plus one or more target languages. Switch sets from the search bar dropdown or with the previous/next actions
 - Smart direction: with one target language you also get the opposite direction, so you can type in either language. With two target languages (Primary and Secondary) text that is already in the primary language goes to the secondary one
-- Translate to many languages at once in **Quick Translate**
-- Instant commands that translate the selected text (or the argument) and copy it, paste it over the selection, or show it in a notification
-- Pronunciation (romanization) from Google Translate, text-to-speech playback, "open in Google Translate / DeepL" on the web
+- Translate to many languages at once in **Translate Quick**
+- **Translate as You Type** can be turned off: then text is translated only when you press `Enter`, so DeepL characters are not spent on every keystroke
+- Instant commands: type the text after the command and get the translation in the clipboard or pasted into the window you came from
+- Optional pronunciation (romanization) from Google Translate, text-to-speech playback, "open in Google Translate / DeepL" on the web
 - DeepL formality (more or less formal), DeepL usage of the current billing period
 - Clear errors: missing key, unsupported language for the chosen provider, quota exceeded, network problems, each with an action that fixes it
 - Optional HTTP proxy
@@ -50,22 +51,31 @@ Languages that only one provider supports are marked in the language lists, for 
 
 | Command | What it does |
 |:--|:--|
-| `Translate` | Translates as you type with the selected language set. Starts with the selected text |
-| `Quick Translate` | Translates the text into every language of your list at once. Add, remove and reorder languages in the view |
+| `Translate` | Translates with the selected language set. Starts with the selected text |
+| `Translate Quick` | Translates the text into every language of your list at once. Add, remove and reorder languages in the view |
 | `Translate Form` | Form for longer texts: provider, source and target languages, DeepL formality, swap languages |
-| `Instant Translate Copy` | Translates the selected text (or the argument) and copies the translation |
-| `Instant Translate Paste` | Translates the selected text (or the argument) and pastes the translation into the active window, replacing the selection |
-| `Instant Translate View` | Translates the selected text (or the argument) and shows the translation in a desktop notification or a HUD |
+| `Instant Translate Copy` | Translates the text typed after the command and copies the translation |
+| `Instant Translate Paste` | Translates the text typed after the command and pastes the translation into the window that was active before Vicinae |
 
-> **Tip:** assign hotkeys to the instant commands in the Vicinae settings. Select text anywhere, press the hotkey, and the translation is copied or pasted.
+### Instant commands
 
-The instant commands use the default language set: **Translate From**, **Primary Language** and **Secondary Language**.
+Type the command name, press `Tab`, type or paste the text and press `Enter`:
+
+```
+Instant Translate Paste  ⇥  see you tomorrow
+```
+
+The text goes to the primary language of the preferences, or to the secondary one when it is already in the primary language. When nothing is typed after the command, the selected text is used (see **Text Source**).
+
+- **Selected text** comes from the primary selection (the text you highlighted last). Vicinae reads it with the `ext-data-control` Wayland protocol, which recent versions of Sway, Hyprland, niri, KDE Plasma and other compositors support, and only while clipboard monitoring is on in the Vicinae Clipboard History settings. GNOME doesn't have the protocol, so there type the text after the command.
+- **Paste** uses the Vicinae input server (Settings → Advanced → Input server, on by default). Vicinae puts the translation into the clipboard, sends the paste shortcut to the previous window and then restores your clipboard.
 
 ## Shortcuts
 
 | Shortcut | Action |
 |:--|:--|
-| `Enter` | Copy (or paste, see **Default Action**) the translation |
+| `Enter` | Copy (or paste, see **Default Action**) the translation. With **Translate as You Type** off: translate |
+| `Ctrl+Enter` | Translate (Translate Form, with **Translate as You Type** off) |
 | `Ctrl+Shift+P` | Change provider |
 | `Ctrl+F` | Toggle full text |
 | `Ctrl+T` | Play text-to-speech |
@@ -88,10 +98,11 @@ The provider chosen with `Ctrl+Shift+P` (or in Translate Form) is remembered for
 | DeepL Formality | Default, more formal or less formal. Languages without formality ignore it |
 | Translate From, Primary Language, Secondary Language | The default language set. The secondary language is used when the text is already in the primary one |
 | Autofill Input | Start the views with the selected text |
-| Text Source | Selected text, selected text then clipboard, or clipboard then selected text |
+| Translate as You Type | On: translate while typing (with a short pause). Off: translate only on `Enter` in Translate and Translate Quick and on `Ctrl+Enter` in Translate Form. Changing the provider or the languages also waits for the next `Enter` |
+| Pronunciation | Show the Latin romanization from Google Translate, e.g. "Vsem privet" under "Всем привет" |
+| Text Source | Selected text, selected text then clipboard, or clipboard then selected text. Used when a view opens and by the instant commands when nothing is typed after the command |
 | Default Action | What `Enter` does: copy or paste |
 | Result Ordering | Move same-language results (English → English) to the bottom |
-| Instant Translate View | Desktop notification or HUD |
 | Text-to-Speech Player | A command that plays an MP3 file, `{file}` is replaced with its path (e.g. `mpv --volume=80 {file}`). Empty means the first of `mpv`, `ffplay`, `mpg123`, `pw-play`, `cvlc` found on `PATH` |
 | HTTP Proxy URL | Used for every request, e.g. `http://proxy.example.com:8080` |
 
@@ -101,14 +112,15 @@ The provider chosen with `Ctrl+Shift+P` (or in Translate Form) is remembered for
 - **"Quota exceeded" (DeepL):** the monthly character limit is used up. **Show DeepL Usage** shows the numbers.
 - **Too many requests (Google):** Google limits its free endpoint. Wait a minute or use DeepL.
 - **No text-to-speech:** install `mpv` (or another player from the list above), or set **Text-to-Speech Player**. Speech uses Google's voices for every provider.
-- **Selected text is not picked up:** some applications don't expose the selection. Set **Text Source** to use the clipboard as well.
+- **Selected text is not picked up:** your compositor may not support `ext-data-control` (GNOME), or clipboard monitoring is off in the Vicinae Clipboard History settings. Type the text after the command, or set **Text Source** to use the clipboard as well.
+- **Instant Translate Paste does not paste:** check that the input server is on in the Vicinae settings (Settings → Advanced). The translation then stays in the clipboard, paste it with `Ctrl+V`.
 
 ## Development
 
 ```bash
 npm install
 npm run dev            # vici develop
-npm test               # provider, translation and manifest tests
+npm test               # provider, translation, manifest and query tests
 npm run typecheck
 npm run lint           # vici lint
 ```
@@ -121,6 +133,15 @@ npm run lint           # vici lint
 4. Run `npm run sync-manifest` to regenerate the provider and language dropdowns of the preferences.
 
 All commands, language pickers, error views and the provider switch pick the new provider up automatically. Languages use shared codes from [`src/lib/languages.ts`](src/lib/languages.ts); each provider maps them to its own codes.
+
+## Credits
+
+Parts of this extension are adapted from other MIT-licensed projects:
+
+- [Raycast Google Translate extension](https://github.com/raycast/extensions/tree/main/extensions/google-translate): the commands and their layout, language sets and how they are stored, and the translation logic (choosing between the primary and secondary language, translating to several languages and in both directions). Ported to the Vicinae API and rewritten around providers.
+- [iamtraction/google-translate](https://github.com/iamtraction/google-translate), vendored by the Raycast extension: the Google Translate language codes and names, and the request to the free Google Translate endpoint with its response parsing.
+- [google-tts-api](https://github.com/zlargon/google-tts): the text-to-speech URL and splitting long texts into 200-character parts, reimplemented without the dependency.
+- [Raycast DeepCast extension](https://github.com/raycast/extensions/tree/main/extensions/deepcast): a reference for the DeepL API (Free and Pro hosts, quota errors). The DeepL provider itself follows the [DeepL API documentation](https://developers.deepl.com/docs).
 
 ## License
 

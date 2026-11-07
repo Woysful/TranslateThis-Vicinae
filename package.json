@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
   "name": "translate-this",
   "title": "TranslateThis",
-  "description": "Translate text with Google Translate or DeepL: language sets, quick translation to many languages, instant translate and paste, text-to-speech",
+  "description": "Translate text with Google Translate or DeepL: language sets, translation to many languages at once, instant translate and paste, text-to-speech",
   "version": "1.0.0",
   "categories": [
     "Productivity"
@@ -31,7 +31,7 @@
     },
     {
       "name": "quick-translate",
-      "title": "Quick Translate",
+      "title": "Translate Quick",
       "subtitle": "TranslateThis",
       "description": "Translate text to several languages at once",
       "mode": "view",
@@ -56,7 +56,7 @@
       "name": "instant-translate-copy",
       "title": "Instant Translate Copy",
       "subtitle": "TranslateThis",
-      "description": "Translate the selected text (or the argument) and copy the translation",
+      "description": "Translate the text typed after the command (or the selected text) and copy the translation",
       "mode": "no-view",
       "keywords": [
         "translate",
@@ -67,7 +67,7 @@
         {
           "name": "text",
           "type": "text",
-          "placeholder": "Text (optional)",
+          "placeholder": "Text to translate",
           "required": false
         }
       ]
@@ -76,7 +76,7 @@
       "name": "instant-translate-paste",
       "title": "Instant Translate Paste",
       "subtitle": "TranslateThis",
-      "description": "Translate the selected text (or the argument) and paste the translation into the active window",
+      "description": "Translate the text typed after the command (or the selected text) and paste the translation into the previous window",
       "mode": "no-view",
       "keywords": [
         "translate",
@@ -87,27 +87,7 @@
         {
           "name": "text",
           "type": "text",
-          "placeholder": "Text (optional)",
-          "required": false
-        }
-      ]
-    },
-    {
-      "name": "instant-translate-view",
-      "title": "Instant Translate View",
-      "subtitle": "TranslateThis",
-      "description": "Translate the selected text (or the argument) and show the translation in a notification",
-      "mode": "no-view",
-      "keywords": [
-        "translate",
-        "notification",
-        "hud"
-      ],
-      "arguments": [
-        {
-          "name": "text",
-          "type": "text",
-          "placeholder": "Text (optional)",
+          "placeholder": "Text to translate",
           "required": false
         }
       ]
@@ -3253,9 +3233,27 @@
       "default": true
     },
     {
+      "name": "translateOnType",
+      "title": "Translate as You Type",
+      "label": "Translate while typing",
+      "description": "When off, Translate, Translate Quick and Translate Form translate only when you run the Translate action (Enter in lists, Ctrl+Enter in the form). Saves API characters",
+      "type": "checkbox",
+      "required": false,
+      "default": true
+    },
+    {
+      "name": "showPronunciation",
+      "title": "Pronunciation",
+      "label": "Show romanization of translations",
+      "description": "Latin transcription from Google Translate, e.g. \"Vsem privet\" under \"Всем привет\"",
+      "type": "checkbox",
+      "required": false,
+      "default": true
+    },
+    {
       "name": "textSource",
       "title": "Text Source",
-      "description": "Where views and Instant Translate commands take the text from",
+      "description": "Where views take the text from when they open, and where the Instant Translate commands take it from when nothing is typed after the command",
       "type": "dropdown",
       "required": false,
       "default": "selection",
@@ -3300,24 +3298,6 @@
       "type": "checkbox",
       "required": false,
       "default": false
-    },
-    {
-      "name": "instantViewStyle",
-      "title": "Instant Translate View",
-      "description": "How Instant Translate View shows the translation",
-      "type": "dropdown",
-      "required": false,
-      "default": "notification",
-      "data": [
-        {
-          "title": "Desktop notification",
-          "value": "notification"
-        },
-        {
-          "title": "HUD",
-          "value": "hud"
-        }
-      ]
     },
     {
       "name": "ttsPlayer",

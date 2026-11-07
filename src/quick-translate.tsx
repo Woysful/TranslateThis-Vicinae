@@ -3,13 +3,11 @@ import { useState } from "react";
 import { ProviderActions } from "./components/actions";
 import { ErrorEmptyView } from "./components/ErrorView";
 import { SourceLanguageDropdown } from "./components/QuickTranslate";
-import { TranslationItems } from "./components/TranslationItems";
 import {
-	TRANSLATE_DEBOUNCE_MS,
-	useAsync,
-	useDebouncedValue,
-	useTextState,
-} from "./lib/hooks";
+	TranslatePromptItem,
+	TranslationItems,
+} from "./components/TranslationItems";
+import { useAsync, useTextState, useTranslationQuery } from "./lib/hooks";
 import { languageName } from "./lib/languages";
 import { getSettings, providerSettings } from "./lib/preferences";
 import {
@@ -19,37 +17,41 @@ import {
 } from "./lib/state";
 import { multiTranslate } from "./lib/translate";
 
-export default function QuickTranslate(props: LaunchProps) {
+export default function TranslateQuick(props: LaunchProps) {
 	const settings = getSettings();
 	const [provider, setProvider] = useProvider();
 	const [source] = useSourceLanguage();
 	const [targets] = useTargetLanguages();
 	const [isShowingDetail, setIsShowingDetail] = useState(true);
 	const [text, setText] = useTextState(props.fallbackText);
-	const debounced = useDebouncedValue(text, TRANSLATE_DEBOUNCE_MS).trim();
+	const { query, pending, auto, submit } = useTranslationQuery(
+		text,
+		`${provider.id}:${source}:${targets.join()}`,
+	);
 
 	const { data, error, isLoading } = useAsync(
 		async (signal) =>
-			debounced
+			query
 				? multiTranslate(
 						{ provider, settings: providerSettings(settings), signal },
-						debounced,
+						query,
 						{ langFrom: source, langTo: targets },
 						settings.prioritizeCrossLanguage,
 					)
 				: [],
-		[debounced, provider.id, source, targets.join()],
+		[query, provider.id, source, targets.join()],
 	);
 
-	const outcomes = debounced ? (data ?? []) : [];
+	const outcomes = query ? (data ?? []) : [];
+	const description = `${languageName(source)} → ${targets.map(languageName).join(", ")} · ${provider.name}`;
 
 	return (
 		<List
-			navigationTitle={`Quick Translate · ${provider.name}`}
+			navigationTitle={`Translate Quick · ${provider.name}`}
 			searchBarPlaceholder="Enter text to translate"
 			searchText={text}
 			onSearchTextChange={setText}
-			isLoading={isLoading && Boolean(debounced)}
+			isLoading={isLoading && Boolean(query)}
 			isShowingDetail={isShowingDetail && outcomes.length > 0}
 			searchBarAccessory={<SourceLanguageDropdown />}
 			actions={
@@ -58,7 +60,15 @@ export default function QuickTranslate(props: LaunchProps) {
 				</ActionPanel>
 			}
 		>
-			{error && debounced ? (
+			{pending ? (
+				<TranslatePromptItem
+					text={text}
+					description={description}
+					provider={provider}
+					onTranslate={submit}
+					onProviderChange={setProvider}
+				/>
+			) : error && query ? (
 				<ErrorEmptyView
 					error={error}
 					provider={provider}
@@ -66,9 +76,15 @@ export default function QuickTranslate(props: LaunchProps) {
 				/>
 			) : outcomes.length === 0 ? (
 				<List.EmptyView
-					icon={debounced ? Icon.Hourglass : Icon.Text}
-					title={debounced ? "Translating…" : "Type or paste text to translate"}
-					description={`${languageName(source)} → ${targets.map(languageName).join(", ")} · ${provider.name}`}
+					icon={query ? Icon.Hourglass : Icon.Text}
+					title={
+						query
+							? "Translating…"
+							: auto
+								? "Type or paste text to translate"
+								: "Type or paste text, then press Enter to translate"
+					}
+					description={description}
 				/>
 			) : (
 				outcomes.map((outcome) => (

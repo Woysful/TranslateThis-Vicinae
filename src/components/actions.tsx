@@ -24,6 +24,7 @@ export const SHORTCUTS = {
 	copyOriginal: { modifiers: ["cmd", "shift"], key: "o" },
 	swapLanguages: { modifiers: ["cmd", "shift"], key: "s" },
 	manageLanguageSets: { modifiers: ["cmd"], key: "l" },
+	translate: { modifiers: ["cmd"], key: "enter" },
 } satisfies Record<string, Keyboard.Shortcut>;
 
 /** Copy and Paste, ordered by the Default Action preference. */

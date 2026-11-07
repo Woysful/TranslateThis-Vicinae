@@ -1,6 +1,7 @@
 import { Action, ActionPanel, Icon, List } from "@vicinae/api";
 import type { ReactNode } from "react";
 import { languageName } from "../lib/languages";
+import { getSettings } from "../lib/preferences";
 import type { TargetOutcome, TranslationResult } from "../lib/translate";
 import { getProvider } from "../providers";
 import type { ProviderId, TranslationProvider } from "../providers/types";
@@ -13,10 +14,17 @@ import {
 	ToggleDetailAction,
 } from "./actions";
 
-function ResultDetail({ result }: { result: TranslationResult }) {
-	const pronunciation = result.pronunciation
-		? `\n\n\`\`\`\n${result.pronunciation}\n\`\`\``
-		: "";
+function ResultDetail({
+	result,
+	showPronunciation,
+}: {
+	result: TranslationResult;
+	showPronunciation: boolean;
+}) {
+	const pronunciation =
+		showPronunciation && result.pronunciation
+			? `\n\n\`\`\`\n${result.pronunciation}\n\`\`\``
+			: "";
 	return (
 		<List.Item.Detail
 			markdown={`${result.translatedText}${pronunciation}`}
@@ -97,6 +105,10 @@ export function TranslationItems(props: Props) {
 	}
 
 	const result = outcome.result;
+	const { showPronunciation } = getSettings();
+	const detail = (
+		<ResultDetail result={result} showPronunciation={showPronunciation} />
+	);
 	const direction = `${languageName(result.from)} → ${languageName(result.to)}`;
 	const accessories = [
 		{
@@ -110,13 +122,15 @@ export function TranslationItems(props: Props) {
 		<ActionPanel>
 			<ActionPanel.Section>
 				<CopyPasteActions value={value} label={label} />
-				{result.pronunciation && value !== result.pronunciation && (
-					<Action.CopyToClipboard
-						title="Copy Pronunciation"
-						content={result.pronunciation}
-						shortcut={SHORTCUTS.copyPronunciation}
-					/>
-				)}
+				{showPronunciation &&
+					result.pronunciation &&
+					value !== result.pronunciation && (
+						<Action.CopyToClipboard
+							title="Copy Pronunciation"
+							content={result.pronunciation}
+							shortcut={SHORTCUTS.copyPronunciation}
+						/>
+					)}
 				<Action.CopyToClipboard
 					title="Copy Original Text"
 					content={result.originalText}
@@ -135,18 +149,58 @@ export function TranslationItems(props: Props) {
 			<List.Item
 				title={result.translatedText}
 				accessories={accessories}
-				detail={<ResultDetail result={result} />}
+				detail={detail}
 				actions={actions(result.translatedText, "Translation")}
 			/>
-			{props.pronunciationRow && result.pronunciation && (
+			{props.pronunciationRow && showPronunciation && result.pronunciation && (
 				<List.Item
 					icon={Icon.SpeechBubble}
 					title={result.pronunciation}
 					accessories={accessories}
-					detail={<ResultDetail result={result} />}
+					detail={detail}
 					actions={actions(result.pronunciation, "Pronunciation")}
 				/>
 			)}
 		</>
+	);
+}
+
+/** Manual mode: the item whose primary action translates the input. */
+export function TranslatePromptItem({
+	text,
+	description,
+	provider,
+	onTranslate,
+	onProviderChange,
+	extraActions,
+}: {
+	text: string;
+	description: string;
+	provider: TranslationProvider;
+	onTranslate: () => void;
+	onProviderChange: (id: ProviderId) => void;
+	extraActions?: ReactNode;
+}) {
+	const characters = Array.from(text.trim()).length;
+	return (
+		<List.Item
+			icon={Icon.Globe01}
+			title="Translate"
+			subtitle={description}
+			accessories={[{ text: `${characters} characters` }]}
+			actions={
+				<ActionPanel>
+					<ActionPanel.Section>
+						<Action
+							title="Translate"
+							icon={Icon.Globe01}
+							onAction={onTranslate}
+						/>
+					</ActionPanel.Section>
+					{extraActions}
+					<ProviderActions provider={provider} onChange={onProviderChange} />
+				</ActionPanel>
+			}
+		/>
 	);
 }

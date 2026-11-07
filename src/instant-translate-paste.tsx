@@ -7,8 +7,10 @@ export default async function InstantTranslatePaste(
 	await instantTranslate(
 		props.arguments?.text ?? props.fallbackText,
 		async (result) => {
-			await closeMainWindow();
+			// Vicinae copies the text, waits until the previous window has the focus
+			// again, sends the paste shortcut there and restores the clipboard.
 			await Clipboard.paste(result.translatedText);
+			await closeMainWindow({ clearRootSearch: true });
 		},
 	);
 }

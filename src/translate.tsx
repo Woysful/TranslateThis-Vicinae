@@ -6,13 +6,11 @@ import {
 	LanguageSetDropdown,
 	LanguageSetShifterActions,
 } from "./components/LanguageSets";
-import { TranslationItems } from "./components/TranslationItems";
 import {
-	TRANSLATE_DEBOUNCE_MS,
-	useAsync,
-	useDebouncedValue,
-	useTextState,
-} from "./lib/hooks";
+	TranslatePromptItem,
+	TranslationItems,
+} from "./components/TranslationItems";
+import { useAsync, useTextState, useTranslationQuery } from "./lib/hooks";
 import { formatLanguageSet } from "./lib/language-sets";
 import { getSettings, providerSettings } from "./lib/preferences";
 import { useProvider, useSelectedLanguageSet } from "./lib/state";
@@ -28,36 +26,37 @@ export default function Translate(props: LaunchProps) {
 	const [languageSet] = useSelectedLanguageSet();
 	const [isShowingDetail, setIsShowingDetail] = useState(false);
 	const [text, setText] = useTextState(props.fallbackText);
-	const debounced = useDebouncedValue(text, TRANSLATE_DEBOUNCE_MS).trim();
+	const setKey = JSON.stringify(languageSet);
+	const { query, pending, auto, submit } = useTranslationQuery(
+		text,
+		`${provider.id}:${setKey}`,
+	);
 
 	const { data, error, isLoading } = useAsync(
 		async (signal): Promise<TargetOutcome[]> => {
-			if (!debounced) return [];
+			if (!query) return [];
 			const context = {
 				provider,
 				settings: providerSettings(settings),
 				signal,
 			};
 			if (languageSet.langTo.length === 1) {
-				const results = await doubleWayTranslate(
-					context,
-					debounced,
-					languageSet,
-				);
+				const results = await doubleWayTranslate(context, query, languageSet);
 				return results.map((result) => ({ to: result.to, result }));
 			}
 			return multiTranslate(
 				context,
-				debounced,
+				query,
 				languageSet,
 				settings.prioritizeCrossLanguage,
 			);
 		},
-		[debounced, provider.id, JSON.stringify(languageSet)],
+		[query, provider.id, setKey],
 	);
 
 	const toggleDetail = () => setIsShowingDetail((value) => !value);
-	const outcomes = debounced ? (data ?? []) : [];
+	const outcomes = query ? (data ?? []) : [];
+	const description = `${formatLanguageSet(languageSet)} · ${provider.name}`;
 
 	return (
 		<List
@@ -65,7 +64,7 @@ export default function Translate(props: LaunchProps) {
 			searchBarPlaceholder="Enter text to translate"
 			searchText={text}
 			onSearchTextChange={setText}
-			isLoading={isLoading && Boolean(debounced)}
+			isLoading={isLoading && Boolean(query)}
 			isShowingDetail={isShowingDetail && outcomes.length > 0}
 			searchBarAccessory={<LanguageSetDropdown />}
 			actions={
@@ -75,7 +74,16 @@ export default function Translate(props: LaunchProps) {
 				</ActionPanel>
 			}
 		>
-			{error && debounced ? (
+			{pending ? (
+				<TranslatePromptItem
+					text={text}
+					description={description}
+					provider={provider}
+					onTranslate={submit}
+					onProviderChange={setProvider}
+					extraActions={<LanguageSetShifterActions />}
+				/>
+			) : error && query ? (
 				<ErrorEmptyView
 					error={error}
 					provider={provider}
@@ -85,9 +93,15 @@ export default function Translate(props: LaunchProps) {
 				</ErrorEmptyView>
 			) : outcomes.length === 0 ? (
 				<List.EmptyView
-					icon={debounced ? Icon.Hourglass : Icon.Text}
-					title={debounced ? "Translating…" : "Type or paste text to translate"}
-					description={`${formatLanguageSet(languageSet)} · ${provider.name}`}
+					icon={query ? Icon.Hourglass : Icon.Text}
+					title={
+						query
+							? "Translating…"
+							: auto
+								? "Type or paste text to translate"
+								: "Type or paste text, then press Enter to translate"
+					}
+					description={description}
 				/>
 			) : (
 				outcomes.map((outcome, index) => (

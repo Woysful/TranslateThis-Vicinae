@@ -149,7 +149,7 @@ export function useAllLanguageSets(): LanguageSet[] {
 	);
 }
 
-// --- Quick Translate ------------------------------------------------------
+// --- Translate Quick ------------------------------------------------------
 
 export function useSourceLanguage() {
 	return useCachedState<string>("sourceLanguage", AUTO_DETECT);

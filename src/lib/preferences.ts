@@ -17,10 +17,11 @@ export interface Settings {
 	lang1: string;
 	lang2: string;
 	autoInput: boolean;
+	translateOnType: boolean;
+	showPronunciation: boolean;
 	textSource: TextSource;
 	defaultAction: "copy" | "paste";
 	prioritizeCrossLanguage: boolean;
-	instantViewStyle: "notification" | "hud";
 	ttsPlayer: string;
 	proxy: string;
 }
@@ -33,10 +34,11 @@ const DEFAULTS: Settings = {
 	lang1: "en",
 	lang2: "en",
 	autoInput: true,
+	translateOnType: true,
+	showPronunciation: true,
 	textSource: "selection",
 	defaultAction: "copy",
 	prioritizeCrossLanguage: false,
-	instantViewStyle: "notification",
 	ttsPlayer: "",
 	proxy: "",
 };

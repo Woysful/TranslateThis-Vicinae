@@ -1,6 +1,13 @@
-import { type DependencyList, useEffect, useRef, useState } from "react";
+import {
+	type DependencyList,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { isAbortError, type TranslateError, toTranslateError } from "./errors";
 import { getSettings } from "./preferences";
+import { manualQuery, type SubmittedQuery } from "./query";
 import { readInputText } from "./text-source";
 
 /** Pause between keystrokes before translating. Pastes and selections skip it. */
@@ -67,6 +74,37 @@ export function useDebouncedValue(value: string, delay: number) {
 	}, [value, delay]);
 
 	return debounced;
+}
+
+export interface TranslationQuery {
+	/** Text to translate now, or "" when nothing should be translated. */
+	query: string;
+	/** Manual mode only: text that waits for the Translate action. */
+	pending: boolean;
+	/** Whether text is translated while typing (Translate as You Type). */
+	auto: boolean;
+	submit: () => void;
+}
+
+/**
+ * The text to translate: the debounced input while typing when Translate as
+ * You Type is on, otherwise the input submitted with the Translate action.
+ * `key` identifies the provider and languages, so changing them in manual mode
+ * also waits for the next submit.
+ */
+export function useTranslationQuery(
+	text: string,
+	key: string,
+): TranslationQuery {
+	const auto = getSettings().translateOnType;
+	const debounced = useDebouncedValue(text, TRANSLATE_DEBOUNCE_MS).trim();
+	const [submitted, setSubmitted] = useState<SubmittedQuery>();
+	const submit = useCallback(
+		() => setSubmitted({ text: text.trim(), key }),
+		[text, key],
+	);
+	if (auto) return { query: debounced, pending: false, auto, submit };
+	return { ...manualQuery(text, key, submitted), auto, submit };
 }
 
 export interface AsyncState<T> {
