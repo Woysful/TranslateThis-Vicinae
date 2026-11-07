@@ -53,10 +53,10 @@ Languages that only one provider supports are marked in the language lists, for 
 |:--|:--|
 | `Translate` | Form for any text: provider, source and target languages, DeepL formality, swap languages |
 | `Translate List` | Translates with the selected language set: into every target language of the set at once, or in both directions when the set has one target language. The layout is set with **Translate List Layout** |
-| `Translate & Copy` | Translates the text typed after the command (or the clipboard, see **Clipboard Fallback**) and copies the translation |
-| `Translate & Paste` | Translates the text typed after the command (or the clipboard, see **Clipboard Fallback**) and pastes the translation into the window that was active before Vicinae |
+| `Translate & Copy` | Translates the text typed after the command (or the clipboard, see **Autofill \| Copy/Paste**) and copies the translation |
+| `Translate & Paste` | Translates the text typed after the command (or the clipboard, see **Autofill \| Copy/Paste**) and pastes the translation into the window that was active before Vicinae |
 
-With **Autofill Input** on, Translate and Translate List start with the text from the clipboard.
+With **Autofill | Translate/Translate List** on, Translate and Translate List start with the text from the clipboard.
 
 ### Translate & Copy and Translate & Paste
 
@@ -66,7 +66,7 @@ Type the command name, press `Tab`, type or paste the text and press `Enter`:
 Translate & Paste  ⇥  see you tomorrow
 ```
 
-The text goes to the primary language of the preferences, or to the secondary one when it is already in the primary language. When nothing is typed after the command and **Clipboard Fallback** is on, the clipboard text is translated; with the preference off, only the typed text is. You can bind the commands to a hotkey in the Vicinae settings: the hotkey opens Vicinae with the command, ready for the text.
+The text goes to the primary language of the preferences, or to the secondary one when it is already in the primary language. When nothing is typed after the command and **Autofill | Copy/Paste** is on, the clipboard text is translated; with the preference off, only the typed text is. You can bind the commands to a hotkey in the Vicinae settings: the hotkey opens Vicinae with the command, ready for the text.
 
 **Paste** uses the Vicinae input server (Settings → Advanced → Input server, on by default). Vicinae puts the translation into the clipboard, sends the paste shortcut to the previous window and then restores your clipboard.
 
@@ -97,10 +97,10 @@ The provider chosen with `Ctrl+Shift+P` (or in the Translate form) is remembered
 | DeepL API Key | Needed only for DeepL |
 | DeepL Formality | Default, more formal or less formal. Languages without formality ignore it |
 | Translate From, Primary Language, Secondary Language | The default language set. The secondary language is used when the text is already in the primary one |
-| Autofill Input | Start Translate and Translate List with the text from the clipboard |
-| Clipboard Fallback | Translate & Copy and Translate & Paste translate the clipboard when nothing is typed after the command. Off: only the typed text is translated |
+| Autofill \| Translate/Translate List | Start Translate and Translate List with the text from the clipboard |
+| Autofill \| Copy/Paste | Translate & Copy and Translate & Paste translate the clipboard when nothing is typed after the command. Off: only the typed text is translated |
 | Translate as You Type | On: translate while typing (with a short pause). Off: translate only on `Ctrl+Enter` in Translate and on `Enter` in Translate List. Changing the provider or the languages also waits for the next `Enter` |
-| Pronunciation | Show the Latin romanization from Google Translate, e.g. "Vsem privet" under "Всем привет" |
+| Pronunciation | Transcription from Google Translate, e.g. "Vitayu, druzi!" under "Вітаю, друзі!" |
 | Translate List Layout | Compact: one row per translation, the pronunciation on its own row and the source → target languages on the right; `Ctrl+F` opens the details. Details panel: the full translation, languages and provider are shown next to the list from the start |
 | Default Action | What `Enter` does: copy or paste |
 | Result Ordering | Move same-language results (English → English) to the bottom |

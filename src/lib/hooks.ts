@@ -13,7 +13,7 @@ import { readClipboardText } from "./text-source";
 /** Pause between keystrokes before translating. Pastes skip it. */
 export const TRANSLATE_DEBOUNCE_MS = 250;
 
-/** The input text, filled from the clipboard when Autofill Input is on. */
+/** The input text, filled from the clipboard when Autofill | Translate/Translate List is on. */
 export function useTextState(initialText?: string) {
 	const [text, setText] = useState(initialText ?? "");
 	const textRef = useRef(text);

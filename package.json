@@ -50,7 +50,7 @@
       "name": "instant-translate-copy",
       "title": "Translate & Copy",
       "subtitle": "TranslateThis",
-      "description": "Translate the text typed after the command (or the clipboard text, see Clipboard Fallback) and copy the translation",
+      "description": "Translate the text typed after the command (or the clipboard text, see Autofill | Copy/Paste) and copy the translation",
       "mode": "no-view",
       "keywords": [
         "translate",
@@ -71,7 +71,7 @@
       "name": "instant-translate-paste",
       "title": "Translate & Paste",
       "subtitle": "TranslateThis",
-      "description": "Translate the text typed after the command (or the clipboard text, see Clipboard Fallback) and paste the translation into the previous window",
+      "description": "Translate the text typed after the command (or the clipboard text, see Autofill | Copy/Paste) and paste the translation into the previous window",
       "mode": "no-view",
       "keywords": [
         "translate",
@@ -3220,7 +3220,7 @@
     },
     {
       "name": "autoInput",
-      "title": "Autofill Input",
+      "title": "Autofill | Translate/Translate List",
       "label": "Fill the input with the clipboard text",
       "description": "Translate and Translate List start with the text from the clipboard",
       "type": "checkbox",
@@ -3229,7 +3229,7 @@
     },
     {
       "name": "instantClipboard",
-      "title": "Clipboard Fallback",
+      "title": "Autofill | Copy/Paste",
       "label": "Translate the clipboard when no text is typed",
       "description": "Translate & Copy and Translate & Paste translate the clipboard text when nothing is typed after the command. When off, only the typed text is translated",
       "type": "checkbox",
@@ -3249,7 +3249,7 @@
       "name": "showPronunciation",
       "title": "Pronunciation",
       "label": "Show romanization of translations",
-      "description": "Latin transcription from Google Translate, e.g. \"Vsem privet\" under \"Всем привет\"",
+      "description": "Transcription from Google Translate, e.g. \"Vitayu, druzi!\" under \"Вітаю, друзі!\"",
       "type": "checkbox",
       "required": false,
       "default": true

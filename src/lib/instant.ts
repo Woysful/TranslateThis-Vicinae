@@ -20,9 +20,9 @@ export function preview(text: string) {
 
 /**
  * Shared flow of Translate & Copy and Translate & Paste: translate the text
- * typed after the command (or the clipboard, with Clipboard Fallback on) to the
- * primary language, or to the secondary one when
- * the text is already in the primary language, then hand the result over.
+ * typed after the command (or the clipboard, with Autofill | Copy/Paste on) to
+ * the primary language, or to the secondary one when the text is already in the
+ * primary language, then hand the result over.
  *
  * The Vicinae window stays open until `deliver` runs: a HUD or closing the
  * window first moves the focus away, and then compositors without the
