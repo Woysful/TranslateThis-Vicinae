@@ -2,7 +2,6 @@ import { Cache } from "@vicinae/api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getProvider, isProviderId } from "../providers";
 import type { ProviderId, TranslationProvider } from "../providers/types";
-import { AUTO_DETECT } from "./languages";
 import { isSameLanguageSet, unifyLanguageSet } from "./language-sets";
 import { getSettings, preferencesLanguageSet } from "./preferences";
 import type { LanguageSet } from "./translate";
@@ -147,15 +146,4 @@ export function useAllLanguageSets(): LanguageSet[] {
 		],
 		[preferencesSet, sets],
 	);
-}
-
-// --- Translate Quick ------------------------------------------------------
-
-export function useSourceLanguage() {
-	return useCachedState<string>("sourceLanguage", AUTO_DETECT);
-}
-
-export function useTargetLanguages() {
-	const defaults = preferencesLanguageSet(getSettings()).langTo;
-	return useCachedState<string[]>("targetLanguages", defaults);
 }

@@ -1,122 +1,305 @@
-import { ActionPanel, Icon, type LaunchProps, List } from "@vicinae/api";
-import { useState } from "react";
-import { ProviderActions } from "./components/actions";
-import { ErrorEmptyView } from "./components/ErrorView";
 import {
-	LanguageSetDropdown,
-	LanguageSetShifterActions,
-} from "./components/LanguageSets";
+	Action,
+	ActionPanel,
+	Form,
+	Icon,
+	type LaunchProps,
+	showToast,
+	Toast,
+} from "@vicinae/api";
+import { useRef } from "react";
 import {
-	TranslatePromptItem,
-	TranslationItems,
-} from "./components/TranslationItems";
+	CopyPasteActions,
+	ErrorActions,
+	OpenInProviderAction,
+	ProviderActions,
+	SHORTCUTS,
+	SpeakAction,
+} from "./components/actions";
+import { LanguageSetsList } from "./components/LanguageSets";
 import { useAsync, useTextState, useTranslationQuery } from "./lib/hooks";
-import { formatLanguageSet } from "./lib/language-sets";
+import { AUTO_DETECT, languageName, sortByName } from "./lib/languages";
 import { getSettings, providerSettings } from "./lib/preferences";
-import { useProvider, useSelectedLanguageSet } from "./lib/state";
 import {
-	doubleWayTranslate,
-	multiTranslate,
-	type TargetOutcome,
-} from "./lib/translate";
+	useCachedState,
+	useProvider,
+	useSelectedLanguageSet,
+} from "./lib/state";
+import { translateText } from "./lib/translate";
+import { isProviderId, PROVIDER_LIST } from "./providers";
+import type {
+	Formality,
+	LanguageRole,
+	TranslationProvider,
+} from "./providers/types";
+
+function languageItems(
+	provider: TranslationProvider,
+	role: LanguageRole,
+	current: string,
+) {
+	const codes = provider.languages(role);
+	const items = sortByName(codes).map((code) => ({
+		code,
+		title: languageName(code),
+	}));
+	if (current !== AUTO_DETECT && !codes.includes(current)) {
+		const note = provider.resolve(current, role)
+			? ""
+			: ` (not supported by ${provider.name})`;
+		items.unshift({ code: current, title: `${languageName(current)}${note}` });
+	}
+	return items;
+}
+
+const ignoreEdit = () => {};
+
+const FORMALITY_OPTIONS: { value: Formality; title: string }[] = [
+	{ value: "default", title: "Default" },
+	{ value: "prefer_more", title: "More formal (polite)" },
+	{ value: "prefer_less", title: "Less formal (plain)" },
+];
 
 export default function Translate(props: LaunchProps) {
 	const settings = getSettings();
 	const [provider, setProvider] = useProvider();
-	const [languageSet] = useSelectedLanguageSet();
-	const [isShowingDetail, setIsShowingDetail] = useState(false);
-	const [text, setText] = useTextState(props.fallbackText);
-	const setKey = JSON.stringify(languageSet);
-	const { query, pending, auto, submit } = useTranslationQuery(
-		text,
-		`${provider.id}:${setKey}`,
+	const [languageSet, setLanguageSet] = useSelectedLanguageSet();
+	const [formality, setFormality] = useCachedState<Formality>(
+		"formality",
+		settings.formality,
 	);
+	const langFrom = languageSet.langFrom;
+	const langTo = languageSet.langTo[0] ?? "en";
+	const [text, setText] = useTextState(props.fallbackText);
+	const { query, pending, submit } = useTranslationQuery(
+		text,
+		`${provider.id}:${langFrom}:${langTo}:${formality}`,
+	);
+	const textRef = useRef<Form.TextArea>(null);
+	const fromRef = useRef<Form.Dropdown>(null);
+	const toRef = useRef<Form.Dropdown>(null);
 
-	const { data, error, isLoading } = useAsync(
-		async (signal): Promise<TargetOutcome[]> => {
-			if (!query) return [];
-			const context = {
-				provider,
-				settings: providerSettings(settings),
-				signal,
-			};
-			if (languageSet.langTo.length === 1) {
-				const results = await doubleWayTranslate(context, query, languageSet);
-				return results.map((result) => ({ to: result.to, result }));
-			}
-			return multiTranslate(
-				context,
+	const {
+		data: result,
+		error,
+		isLoading,
+	} = useAsync(
+		async (signal) => {
+			if (!query) return undefined;
+			return translateText(
+				{
+					provider,
+					settings: { ...providerSettings(settings), formality },
+					signal,
+				},
 				query,
-				languageSet,
-				settings.prioritizeCrossLanguage,
+				langFrom,
+				langTo,
 			);
 		},
-		[query, provider.id, setKey],
+		[query, provider.id, langFrom, langTo, formality],
 	);
+	const translation = query ? (result?.translatedText ?? "") : "";
+	const pronunciation =
+		query && settings.showPronunciation ? result?.pronunciation : undefined;
+	const detected =
+		langFrom === AUTO_DETECT && result?.detected ? result.from : undefined;
 
-	const toggleDetail = () => setIsShowingDetail((value) => !value);
-	const outcomes = query ? (data ?? []) : [];
-	const description = `${formatLanguageSet(languageSet)} · ${provider.name}`;
+	const handleTextChange = (value: string) => {
+		const limit = provider.maxTextLength;
+		if (limit && value.length > limit) {
+			setText(value.slice(0, limit));
+			showToast({
+				style: Toast.Style.Failure,
+				title: "Text is too long",
+				message: `${provider.name} translates up to ${limit} characters at once`,
+			});
+		} else {
+			setText(value);
+		}
+	};
+
+	const swapLanguages = () => {
+		const source = detected ?? langFrom;
+		if (source === AUTO_DETECT) {
+			showToast(Toast.Style.Failure, "Choose a source language first");
+			return;
+		}
+		setLanguageSet({ langFrom: langTo, langTo: [source] });
+		if (translation) setText(translation);
+	};
 
 	return (
-		<List
+		<Form
 			navigationTitle={`Translate · ${provider.name}`}
-			searchBarPlaceholder="Enter text to translate"
-			searchText={text}
-			onSearchTextChange={setText}
 			isLoading={isLoading && Boolean(query)}
-			isShowingDetail={isShowingDetail && outcomes.length > 0}
-			searchBarAccessory={<LanguageSetDropdown />}
 			actions={
 				<ActionPanel>
-					<LanguageSetShifterActions />
+					{pending && (
+						<ActionPanel.Section>
+							<Action
+								title="Translate"
+								icon={Icon.Globe01}
+								shortcut={SHORTCUTS.translate}
+								onAction={submit}
+							/>
+						</ActionPanel.Section>
+					)}
+					<ActionPanel.Section>
+						<CopyPasteActions value={translation} label="Translation" />
+						<Action.CopyToClipboard
+							title="Copy Original Text"
+							content={text}
+							shortcut={SHORTCUTS.copyOriginal}
+						/>
+						{pronunciation && (
+							<Action.CopyToClipboard
+								title="Copy Pronunciation"
+								content={pronunciation}
+								shortcut={SHORTCUTS.copyPronunciation}
+							/>
+						)}
+						{translation && (
+							<SpeakAction text={translation} language={langTo} />
+						)}
+						<OpenInProviderAction
+							provider={provider}
+							text={text}
+							from={langFrom}
+							to={langTo}
+						/>
+					</ActionPanel.Section>
+					<ActionPanel.Section title="Languages">
+						<Action
+							title={`Swap: ${languageName(langTo)} → ${languageName(detected ?? langFrom)}`}
+							icon={Icon.Switch}
+							shortcut={SHORTCUTS.swapLanguages}
+							onAction={swapLanguages}
+						/>
+						<Action
+							title="Change Source Language"
+							icon={Icon.ArrowUp}
+							shortcut={{ modifiers: ["cmd", "shift"], key: "f" }}
+							onAction={() => fromRef.current?.focus()}
+						/>
+						<Action
+							title="Change Target Language"
+							icon={Icon.ArrowDown}
+							shortcut={{ modifiers: ["cmd", "shift"], key: "t" }}
+							onAction={() => toRef.current?.focus()}
+						/>
+						<Action.Push
+							title="Manage Language Sets…"
+							icon={Icon.Pencil}
+							shortcut={SHORTCUTS.manageLanguageSets}
+							target={<LanguageSetsList />}
+						/>
+					</ActionPanel.Section>
+					{error?.kind === "config" && <ErrorActions provider={provider} />}
 					<ProviderActions provider={provider} onChange={setProvider} />
 				</ActionPanel>
 			}
 		>
-			{pending ? (
-				<TranslatePromptItem
-					text={text}
-					description={description}
-					provider={provider}
-					onTranslate={submit}
-					onProviderChange={setProvider}
-					extraActions={<LanguageSetShifterActions />}
-				/>
-			) : error && query ? (
-				<ErrorEmptyView
-					error={error}
-					provider={provider}
-					onProviderChange={setProvider}
-				>
-					<LanguageSetShifterActions />
-				</ErrorEmptyView>
-			) : outcomes.length === 0 ? (
-				<List.EmptyView
-					icon={query ? Icon.Hourglass : Icon.Text}
-					title={
-						query
-							? "Translating…"
-							: auto
-								? "Type or paste text to translate"
-								: "Type or paste text, then press Enter to translate"
-					}
-					description={description}
-				/>
-			) : (
-				outcomes.map((outcome, index) => (
-					<TranslationItems
-						key={`${index}-${outcome.to}`}
-						outcome={outcome}
-						provider={provider}
-						onProviderChange={setProvider}
-						onToggleDetail={toggleDetail}
-						accessory="direction"
-						pronunciationRow
-						extraActions={<LanguageSetShifterActions />}
+			<Form.Dropdown
+				id="provider"
+				title="Provider"
+				value={provider.id}
+				onChange={(value) => {
+					if (isProviderId(value) && value !== provider.id) setProvider(value);
+				}}
+			>
+				{PROVIDER_LIST.map((item) => (
+					<Form.Dropdown.Item key={item.id} value={item.id} title={item.name} />
+				))}
+			</Form.Dropdown>
+			<Form.TextArea
+				id="text"
+				title="Text"
+				placeholder="Enter or paste text here"
+				value={text}
+				onChange={handleTextChange}
+				ref={textRef}
+			/>
+			<Form.Dropdown
+				id="from"
+				title="From"
+				value={langFrom}
+				ref={fromRef}
+				onChange={(value) => {
+					if (value && value !== langFrom)
+						setLanguageSet({ ...languageSet, langFrom: value });
+				}}
+			>
+				<Form.Dropdown.Item value={AUTO_DETECT} title="Auto-Detect" />
+				{languageItems(provider, "source", langFrom).map((item) => (
+					<Form.Dropdown.Item
+						key={item.code}
+						value={item.code}
+						title={item.title}
 					/>
-				))
+				))}
+			</Form.Dropdown>
+			<Form.Dropdown
+				id="to"
+				title="To"
+				value={langTo}
+				ref={toRef}
+				onChange={(value) => {
+					if (value && value !== langTo)
+						setLanguageSet({ langFrom, langTo: [value] });
+				}}
+			>
+				{languageItems(provider, "target", langTo).map((item) => (
+					<Form.Dropdown.Item
+						key={item.code}
+						value={item.code}
+						title={item.title}
+					/>
+				))}
+			</Form.Dropdown>
+			<Form.Separator />
+			{/* Optional items go below the translation: an item inserted above a field
+			    makes Vicinae recreate that field with its previous value. */}
+			<Form.TextArea
+				id="translation"
+				title="Translation"
+				placeholder={
+					pending ? "Run Translate (Ctrl+Enter) to translate" : "Translation"
+				}
+				value={translation}
+				// Vicinae reports programmatic changes of a field as edits and ignores
+				// later values unless the field has onChange to sync its event count.
+				onChange={ignoreEdit}
+			/>
+			{pronunciation && (
+				<Form.Description title="Pronunciation" text={pronunciation} />
 			)}
-		</List>
+			{detected && (
+				<Form.Description title="Detected" text={languageName(detected)} />
+			)}
+			{provider.supportsFormality && (
+				<Form.Dropdown
+					id="formality"
+					title="Formality"
+					info="Applied by DeepL to languages that support it (German, French, Russian, Japanese, ...)"
+					value={formality}
+					onChange={(value) => setFormality(value as Formality)}
+				>
+					{FORMALITY_OPTIONS.map((option) => (
+						<Form.Dropdown.Item
+							key={option.value}
+							value={option.value}
+							title={option.title}
+						/>
+					))}
+				</Form.Dropdown>
+			)}
+			{error && query && (
+				<Form.Description
+					title="Error"
+					text={error.detail ? `${error.title}. ${error.detail}` : error.title}
+				/>
+			)}
+		</Form>
 	);
 }

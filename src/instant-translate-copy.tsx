@@ -1,8 +1,8 @@
 import { Clipboard, type LaunchProps, showHUD } from "@vicinae/api";
 import { instantTranslate, preview } from "./lib/instant";
 
-export default async function InstantTranslateCopy(
-	props: LaunchProps<{ arguments: { text?: string } }>,
+export default async function TranslateAndCopy(
+	props: LaunchProps<{ arguments: { text: string } }>,
 ) {
 	await instantTranslate(
 		props.arguments?.text ?? props.fallbackText,

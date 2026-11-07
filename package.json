@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
   "name": "translate-this",
   "title": "TranslateThis",
-  "description": "Translate text with Google Translate or DeepL: language sets, translation to many languages at once, instant translate and paste, text-to-speech",
+  "description": "Translate text with Google Translate or DeepL: language sets, translation to many languages at once, translate & copy or paste, text-to-speech",
   "version": "1.0.0",
   "categories": [
     "Productivity"
@@ -21,74 +21,69 @@
       "name": "translate",
       "title": "Translate",
       "subtitle": "TranslateThis",
-      "description": "Translate text with the selected language set. With one target language it also shows the opposite direction",
+      "description": "Translate text in a form: provider, source and target languages, DeepL formality and language swap",
       "mode": "view",
       "keywords": [
         "translate",
+        "form",
+        "google",
+        "deepl",
+        "formality"
+      ]
+    },
+    {
+      "name": "translate-list",
+      "title": "Translate List",
+      "subtitle": "TranslateThis",
+      "description": "Translate text with the selected language set: to several languages at once, and in both directions with one target language",
+      "mode": "view",
+      "keywords": [
+        "translate",
+        "list",
+        "quick",
+        "multiple languages",
         "google",
         "deepl"
       ]
     },
     {
-      "name": "quick-translate",
-      "title": "Translate Quick",
-      "subtitle": "TranslateThis",
-      "description": "Translate text to several languages at once",
-      "mode": "view",
-      "keywords": [
-        "translate",
-        "multiple languages"
-      ]
-    },
-    {
-      "name": "translate-form",
-      "title": "Translate Form",
-      "subtitle": "TranslateThis",
-      "description": "Translate longer text in a form, with provider, languages and DeepL formality",
-      "mode": "view",
-      "keywords": [
-        "translate",
-        "form",
-        "formality"
-      ]
-    },
-    {
       "name": "instant-translate-copy",
-      "title": "Instant Translate Copy",
+      "title": "Translate & Copy",
       "subtitle": "TranslateThis",
-      "description": "Translate the text typed after the command (or the selected text) and copy the translation",
+      "description": "Translate the text typed after the command and copy the translation",
       "mode": "no-view",
       "keywords": [
         "translate",
         "copy",
-        "clipboard"
+        "clipboard",
+        "instant"
       ],
       "arguments": [
         {
           "name": "text",
           "type": "text",
           "placeholder": "Text to translate",
-          "required": false
+          "required": true
         }
       ]
     },
     {
       "name": "instant-translate-paste",
-      "title": "Instant Translate Paste",
+      "title": "Translate & Paste",
       "subtitle": "TranslateThis",
-      "description": "Translate the text typed after the command (or the selected text) and paste the translation into the previous window",
+      "description": "Translate the text typed after the command and paste the translation into the previous window",
       "mode": "no-view",
       "keywords": [
         "translate",
         "paste",
-        "replace"
+        "instant"
       ],
       "arguments": [
         {
           "name": "text",
           "type": "text",
           "placeholder": "Text to translate",
-          "required": false
+          "required": true
         }
       ]
     }
@@ -3226,8 +3221,8 @@
     {
       "name": "autoInput",
       "title": "Autofill Input",
-      "label": "Fill the input with the selected text",
-      "description": "Views start with the selected text (or the clipboard, see Text Source)",
+      "label": "Fill the input with the clipboard text",
+      "description": "Translate and Translate List start with the text from the clipboard",
       "type": "checkbox",
       "required": false,
       "default": true
@@ -3236,7 +3231,7 @@
       "name": "translateOnType",
       "title": "Translate as You Type",
       "label": "Translate while typing",
-      "description": "When off, Translate, Translate Quick and Translate Form translate only when you run the Translate action (Enter in lists, Ctrl+Enter in the form). Saves API characters",
+      "description": "When off, Translate and Translate List translate only when you run the Translate action (Ctrl+Enter in Translate, Enter in Translate List). Saves API characters",
       "type": "checkbox",
       "required": false,
       "default": true
@@ -3251,24 +3246,20 @@
       "default": true
     },
     {
-      "name": "textSource",
-      "title": "Text Source",
-      "description": "Where views take the text from when they open, and where the Instant Translate commands take it from when nothing is typed after the command",
+      "name": "listLayout",
+      "title": "Translate List Layout",
+      "description": "Compact: one row per translation with the pronunciation on its own row, Ctrl+F shows the details. Details: the side panel with the full text and languages is open from the start",
       "type": "dropdown",
       "required": false,
-      "default": "selection",
+      "default": "compact",
       "data": [
         {
-          "title": "Selected text",
-          "value": "selection"
+          "title": "Compact",
+          "value": "compact"
         },
         {
-          "title": "Selected text, then clipboard",
-          "value": "selectionOrClipboard"
-        },
-        {
-          "title": "Clipboard, then selected text",
-          "value": "clipboard"
+          "title": "Details panel",
+          "value": "details"
         }
       ]
     },

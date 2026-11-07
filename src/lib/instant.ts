@@ -6,7 +6,6 @@ import {
 	providerSettings,
 } from "./preferences";
 import { readActiveProvider } from "./state";
-import { readInputText } from "./text-source";
 import { smartTranslate, type TranslationResult } from "./translate";
 
 const HUD_PREVIEW_LENGTH = 80;
@@ -19,9 +18,9 @@ export function preview(text: string) {
 }
 
 /**
- * Shared flow of the Instant Translate commands: translate the argument (or the
- * selected text) to the primary language, or to the secondary one when the text
- * is already in the primary language, then hand the result over.
+ * Shared flow of Translate & Copy and Translate & Paste: translate the text
+ * typed after the command to the primary language, or to the secondary one when
+ * the text is already in the primary language, then hand the result over.
  *
  * The Vicinae window stays open until `deliver` runs: a HUD or closing the
  * window first moves the focus away, and then compositors without the
@@ -33,16 +32,10 @@ export async function instantTranslate(
 ) {
 	const settings = getSettings();
 	const provider = readActiveProvider();
-	const text = argumentText?.trim()
-		? argumentText
-		: await readInputText(settings.textSource);
+	const text = argumentText ?? "";
 
 	if (!text.trim()) {
-		await showHUD(
-			settings.textSource === "selection"
-				? "Type the text after the command or select it first"
-				: "Type the text after the command, select it or copy it first",
-		);
+		await showHUD("Type the text to translate after the command");
 		return;
 	}
 

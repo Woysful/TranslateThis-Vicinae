@@ -7,7 +7,7 @@ import type {
 } from "../providers/types";
 import { AUTO_DETECT } from "./languages";
 
-export type TextSource = "selection" | "selectionOrClipboard" | "clipboard";
+export type ListLayout = "compact" | "details";
 
 export interface Settings {
 	provider: ProviderId;
@@ -19,7 +19,7 @@ export interface Settings {
 	autoInput: boolean;
 	translateOnType: boolean;
 	showPronunciation: boolean;
-	textSource: TextSource;
+	listLayout: ListLayout;
 	defaultAction: "copy" | "paste";
 	prioritizeCrossLanguage: boolean;
 	ttsPlayer: string;
@@ -36,7 +36,7 @@ const DEFAULTS: Settings = {
 	autoInput: true,
 	translateOnType: true,
 	showPronunciation: true,
-	textSource: "selection",
+	listLayout: "compact",
 	defaultAction: "copy",
 	prioritizeCrossLanguage: false,
 	ttsPlayer: "",

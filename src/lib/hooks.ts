@@ -8,22 +8,21 @@ import {
 import { isAbortError, type TranslateError, toTranslateError } from "./errors";
 import { getSettings } from "./preferences";
 import { manualQuery, type SubmittedQuery } from "./query";
-import { readInputText } from "./text-source";
+import { readClipboardText } from "./text-source";
 
-/** Pause between keystrokes before translating. Pastes and selections skip it. */
+/** Pause between keystrokes before translating. Pastes skip it. */
 export const TRANSLATE_DEBOUNCE_MS = 250;
 
-/** The input text, filled from the selection (or clipboard) when Autofill Input is on. */
+/** The input text, filled from the clipboard when Autofill Input is on. */
 export function useTextState(initialText?: string) {
 	const [text, setText] = useState(initialText ?? "");
 	const textRef = useRef(text);
 	textRef.current = text;
 
 	useEffect(() => {
-		const settings = getSettings();
-		if (initialText || !settings.autoInput) return;
+		if (initialText || !getSettings().autoInput) return;
 		let cancelled = false;
-		readInputText(settings.textSource).then((value) => {
+		readClipboardText().then((value) => {
 			if (!cancelled && !textRef.current && value.trim()) setText(value);
 		});
 		return () => {
@@ -63,7 +62,7 @@ export function useDebouncedValue(value: string, delay: number) {
 	useEffect(() => {
 		const before = previous.current;
 		previous.current = value;
-		// Keep the pause for typing. A paste, a cleared field or a new selection
+		// Keep the pause for typing. A paste, a cleared field or autofilled text
 		// is not a one-character edit, so it is translated immediately.
 		if (!isSingleCharacterEdit(before, value)) {
 			setDebounced(value);
