@@ -19,7 +19,18 @@ A translator for [Vicinae](https://github.com/vicinaehq/vicinae) with selectable
 
 ## Installation
 
-Build it from the source:
+### From a release
+
+Download `translate-this-<version>.tar.gz` from the [latest release](https://github.com/Woysful/TranslateThis-Vicinae/releases/latest) and unpack it into the Vicinae extensions folder:
+
+```bash
+mkdir -p ~/.local/share/vicinae/extensions
+tar -xzf translate-this-*.tar.gz -C ~/.local/share/vicinae/extensions
+```
+
+The archive contains the `translate-this` folder. To update, delete the old folder and unpack the new archive. If the commands don't show up, restart Vicinae.
+
+### From the source
 
 ```bash
 git clone https://github.com/Woysful/TranslateThis-Vicinae.git
