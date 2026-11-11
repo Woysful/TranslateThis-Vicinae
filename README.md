@@ -1,6 +1,8 @@
-# TranslateThis [Vicinae extension]
+# [<img src="assets/icon.png" width="4%" alt="">](https://github.com/Woysful/FFcut/releases) TranslateThis [Vicinae extension]
 
 A translator for [Vicinae](https://github.com/vicinaehq/vicinae) with **Google Translate** (no setup) and **DeepL** (your own API key).
+
+![](assets/Preview.webp)
 
 ## Installation
 
@@ -28,8 +30,8 @@ Restart Vicinae if the commands don't show up.
 |:--|:--|
 | `Translate` | Form with provider, languages, DeepL formality and language swap |
 | `Translate List` | Translates with the selected language set: to several languages at once, or in both directions |
-| `Translate & Copy` | Translates the text typed after the command and copies the translation |
-| `Translate & Paste` | Translates the text typed after the command and pastes it into the previous window |
+| `Translate & Copy` | Translates the text from clipboard OR typed after the command and copies the translation |
+| `Translate & Paste` | Translates the text from clipboard OR typed after the command and pastes it into the previous window |
 
 For Translate & Copy and Translate & Paste, type the command name, press `Tab`, then type the text and press `Enter`. With nothing typed they can take the text from the clipboard (**Autofill \| Copy/Paste** preference). Paste needs the Vicinae input server (Settings → Advanced).
 
